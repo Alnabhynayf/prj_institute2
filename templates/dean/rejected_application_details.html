@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">تفاصيل الطلب المرفوض</h2>
+    
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4>معلومات الطالب الأساسية</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>الاسم الكامل:</strong> {{ application.student.full_name }}</p>
+                    <p><strong>رقم الهاتف:</strong> {{ application.student.phone }}</p>
+                    <p><strong>البريد الإلكتروني:</strong> {{ application.student.email }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>القسم:</strong> {{ application.department.name }}</p>
+                    <p><strong>العام الدراسي:</strong> {{ application.academic_year.year }}</p>
+                    <p><strong>تاريخ تقديم الطلب:</strong> {{ application.application_date|date:"Y-m-d" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-secondary text-white">
+            <h4>تفاصيل الرفض</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>مرحلة الرفض:</strong> {{ current_status.stage.name }}</p>
+            <p><strong>تاريخ الرفض:</strong> {{ rejection_opinion.created_at|date:"Y-m-d H:i" }}</p>
+            <p><strong>سبب الرفض:</strong></p>
+            <div class="p-3 bg-light rounded">
+                {{ rejection_opinion.description }}
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            <h4>آراء أعضاء اللجنة</h4>
+        </div>
+        <div class="card-body">
+            {% for opinion in committee_opinions %}
+            <div class="mb-3 p-3 border rounded">
+                <h5>{{ opinion.employee.name }} ({{ opinion.employee.get_role_display }})</h5>
+                <p><strong>القرار:</strong> 
+                    <span class="badge {% if opinion.opinion == 'accept' %}bg-success{% else %}bg-danger{% endif %}">
+                        {{ opinion.get_opinion_display }}
+                    </span>
+                </p>
+                <p><strong>التعليق:</strong> {{ opinion.description }}</p>
+                <p class="text-muted small">{{ opinion.created_at|date:"Y-m-d H:i" }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% if stage_results %}
+    <div class="card mb-4">
+        <div class="card-header bg-warning text-dark">
+            <h4>نتائج المراحل</h4>
+        </div>
+        <div class="card-body">
+            {% for result in stage_results %}
+            <div class="mb-3 p-3 border rounded">
+                <h5>نتيجة مقدمة من: {{ result.employee.name }}</h5>
+                <p><strong>المستند:</strong> {{ result.document }}</p>
+                <p><strong>الوصف:</strong> {{ result.description }}</p>
+                {% if result.score %}
+                <p><strong>النتيجة:</strong> {{ result.score }}</p>
+                {% endif %}
+                <p class="text-muted small">{{ result.created_at|date:"Y-m-d H:i" }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <a href="{% url 'rejected_applications' %}" class="btn btn-primary mt-3">
+        العودة إلى قائمة الطلبات المرفوضة
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends 'student/base_s.html' %}
+{% load static %}
+
+{% block title %} حالة الطلب #{{ application.id }} {% endblock %}
+
+{% block content %}
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="space-y-8">
+    <!-- Application Info Section -->
+    <section class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-semibold text-gray-900 flex items-center">
+          <i data-lucide="clipboard-list" class="w-5 h-5 ml-2 text-yellow-600"></i>
+          تفاصيل الطلب #{{ application.id }}
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="p-4 rounded-xl bg-gray-50">
+          <h3 class="text-sm font-medium text-gray-500 mb-1">القسم</h3>
+          <p class="text-lg font-semibold text-gray-900">{{ application.department }}</p>
+        </div>
+        <div class="p-4 rounded-xl bg-gray-50">
+          <h3 class="text-sm font-medium text-gray-500 mb-1">العام الدراسي</h3>
+          <p class="text-lg font-semibold text-gray-900">{{ application.academic_year }}</p>
+        </div>
+        <div class="p-4 rounded-xl bg-gray-50">
+          <h3 class="text-sm font-medium text-gray-500 mb-1">تاريخ التقديم</h3>
+          <p class="text-lg font-semibold text-gray-900">{{ application.application_date|date:"Y-m-d" }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Application Status Section -->
+    <section class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-semibold text-gray-900 flex items-center">
+          <i data-lucide="activity" class="w-5 h-5 ml-2 text-yellow-600"></i>
+          حالة الطلب
+        </h2>
+      </div>
+
+      {% if application_statuses %}
+      <div class="relative">
+        <!-- Progress Bar -->
+        <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-100">
+          {% with total_stages=application_statuses|length completed_stages=application_statuses.completed %}          <div style="width: {% widthratio completed_stages total_stages 100 %}%" 
+               class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-yellow-500"></div>
+          {% endwith %}
+        </div>
+
+        <!-- Current Status -->
+        <div class="flex items-center justify-between mb-6">
+          <span class="px-3 py-1 rounded-full text-sm bg-yellow-100 text-yellow-800">
+            {{ application.get_status_display }}
+          </span>
+          <span class="text-sm text-gray-500">آخر تحديث: {{ application.updated_at|date:"Y-m-d" }}</span>
+        </div>
+
+        <!-- Status Timeline -->
+        <div class="space-y-6">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">المرحلة</th>
+                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الحالة</th>
+                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">التاريخ</th>
+                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الملاحظات</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              {% for status in application_statuses.statuses %}
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  {{ status.stage.name }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  {% if status.result == 'Pending' %}
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">قيد المراجعة</span>
+                  {% elif status.result == 'Pass' %}
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">مقبول</span>
+                  {% elif status.result == 'Fail' %}
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">مرفوض</span>
+                  {% endif %}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {{ status.update_date|date:"Y-m-d" }}
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-500">
+                  {{ status.notes|default:"-" }}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% else %}
+      <div class="text-center py-8">
+        <i data-lucide="alert-circle" class="w-12 h-12 mx-auto text-gray-400"></i>
+        <h3 class="mt-4 text-lg font-medium text-gray-900">لا توجد بيانات حالة متاحة</h3>
+        <p class="mt-1 text-sm text-gray-500">لم يتم تحديث حالة الطلب بعد</p>
+      </div>
+      {% endif %}
+    </section>
+
+    <!-- Actions Section -->
+    <section class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <a href="{% url 'application_details' application.id %}" class="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-lg font-medium transition-colors flex items-center justify-center">
+          <i data-lucide="file-text" class="w-4 h-4 mr-1"></i>
+          عرض تفاصيل الطلب
+        </a>
+        <a href="{% url 'student_dashboard' %}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded-lg font-medium transition-colors flex items-center justify-center">
+          <i data-lucide="arrow-right" class="w-4 h-4 mr-1"></i>
+          العودة إلى لوحة التحكم
+        </a>
+      </div>
+    </section>
+  </div>
+</main>
+{% endblock %}

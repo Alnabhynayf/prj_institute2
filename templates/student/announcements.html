@@ -1,0 +1,142 @@
+{% extends 'student/base_s.html' %}
+{% load static %}
+{% block title %}قائمة الإعلانات{% endblock %}
+
+{% block content %}
+<main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="mb-8 flex items-center justify-between">
+    <h2 class="text-2xl font-bold flex items-center">
+      <i data-lucide="megaphone" class="w-6 h-6 ml-2 text-yellow-600"></i>
+      لوحة الإعلانات
+    </h2>
+    <a href="{% url 'student_dashboard' %}" class="text-sm text-gray-500 hover:text-yellow-600 flex items-center">
+      <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
+      العودة للوحة التحكم
+    </a>
+  </div>
+
+  <div class="mb-4 flex items-center justify-between">
+    <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-semibold">
+      غير مقروءة: {{ unread_count }}
+    </span>
+  </div>
+
+  {% if announcements %}
+    <!-- تبويب الإعلانات -->
+    <div class="mb-6 border-b border-gray-200">
+      <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+        <button id="all-tab" class="tab-button active border-yellow-500 text-yellow-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+          الكل
+        </button>
+        <button id="public-tab" class="tab-button border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+          الإعلانات العامة
+        </button>
+        <button id="private-tab" class="tab-button border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+          الإعلانات الخاصة
+        </button>
+      </nav>
+    </div>
+
+    <!-- قسم عرض الكل (الافتراضي) -->
+    <div id="all-announcements" class="announcement-section">
+      {% for announcement in announcements %}
+        {% include 'student/announcement_card.html' %}
+      {% endfor %}
+    </div>
+
+    <!-- قسم الإعلانات العامة -->
+    <div id="public-announcements" class="announcement-section hidden">
+      <div class="mb-4 flex items-center">
+        <i data-lucide="globe" class="w-5 h-5 ml-2 text-green-600"></i>
+        <h3 class="text-lg font-semibold text-gray-800">الإعلانات العامة</h3>
+      </div>
+      
+      {% for announcement in announcements %}
+        {% if announcement.is_public %}
+          {% include 'student/announcement_card.html' %}
+        {% endif %}
+      {% empty %}
+        <div class="text-center py-8 bg-gray-50 rounded-lg">
+          <i data-lucide="globe" class="w-12 h-12 mx-auto text-gray-300"></i>
+          <p class="mt-4 text-gray-500">لا توجد إعلانات عامة حالياً</p>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- قسم الإعلانات الخاصة -->
+    <div id="private-announcements" class="announcement-section hidden">
+      <div class="mb-4 flex items-center">
+        <i data-lucide="lock" class="w-5 h-5 ml-2 text-blue-600"></i>
+        <h3 class="text-lg font-semibold text-gray-800">الإعلانات الخاصة</h3>
+      </div>
+      
+      {% for announcement in announcements %}
+        {% if not announcement.is_public %}
+          {% include 'student/announcement_card.html' %}
+        {% endif %}
+      {% empty %}
+        <div class="text-center py-8 bg-gray-50 rounded-lg">
+          <i data-lucide="lock" class="w-12 h-12 mx-auto text-gray-300"></i>
+          <p class="mt-4 text-gray-500">لا توجد إعلانات خاصة حالياً</p>
+        </div>
+      {% endfor %}
+    </div>
+
+  {% else %}
+    <div class="text-center py-16">
+      <i data-lucide="bell-off" class="w-12 h-12 mx-auto text-gray-300"></i>
+      <p class="mt-4 text-gray-500">لا توجد إعلانات لعرضها</p>
+    </div>
+  {% endif %}</main>
+
+<style>
+  .tab-button.active {
+    border-color: #d97706;
+    color: #d97706;
+  }
+  .announcement-section {
+    transition: all 0.3s ease;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const tabs = {
+      'all-tab': 'all-announcements',
+      'public-tab': 'public-announcements',
+      'private-tab': 'private-announcements'
+    };
+    
+    // إخفاء جميع الأقسام وإظهار القسم المحدد
+    function showSection(sectionId) {
+      document.querySelectorAll('.announcement-section').forEach(section => {
+        section.classList.add('hidden');
+      });
+      document.getElementById(sectionId).classList.remove('hidden');
+    }
+    
+    // تغيير التبويب النشط
+    function setActiveTab(tabId) {
+      document.querySelectorAll('.tab-button').forEach(tab => {
+        tab.classList.remove('active', 'border-yellow-500', 'text-yellow-600');
+        tab.classList.add('border-transparent', 'text-gray-500');
+      });
+      const activeTab = document.getElementById(tabId);
+      activeTab.classList.add('active', 'border-yellow-500', 'text-yellow-600');
+      activeTab.classList.remove('border-transparent', 'text-gray-500');
+    }
+    
+    // إضافة مستمعين للأحداث
+    Object.keys(tabs).forEach(tabId => {
+      document.getElementById(tabId).addEventListener('click', function() {
+        setActiveTab(tabId);
+        showSection(tabs[tabId]);
+      });
+    });
+    
+    // تعيين التبويب الافتراضي
+    setActiveTab('all-tab');
+    showSection('all-announcements');
+  });
+</script>
+{% endblock %}

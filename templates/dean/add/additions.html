@@ -1,0 +1,185 @@
+{% extends 'dean/base_admin.html' %}
+{% load static %}
+
+{% block title %} الإضافات - العميد {% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 p-8">
+    <div class="max-w-6xl mx-auto">
+        <!-- العنوان الرئيسي -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6">
+            <h2 class="text-xl font-semibold text-gray-900 flex items-center">
+                <i data-lucide="plus-circle" class="w-6 h-6 ml-2 text-yellow-600"></i>
+                الإضافات - لوحة العميد
+            </h2>
+        </div>
+
+        <!-- بطاقات الخيارات -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- إضافة قسم -->
+            <a href="{% url 'add_department' %}" class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-green-400 transition-colors flex flex-col items-center text-center">
+                <div class="bg-green-50 p-3 rounded-full mb-4">
+                    <i data-lucide="building-2" class="w-8 h-8 text-green-600"></i>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">إضافة قسم</h3>
+                <p class="text-sm text-gray-500">إضافة أقسام جديدة للكلية</p>
+            </a>
+            <!-- إضافة عام دراسي -->
+            <a href="{% url 'add_academic_year' %}" class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-yellow-400 transition-colors flex flex-col items-center text-center">
+                <div class="bg-yellow-50 p-3 rounded-full mb-4">
+                    <i data-lucide="calendar" class="w-8 h-8 text-yellow-600"></i>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">إضافة عام دراسي</h3>
+                <p class="text-sm text-gray-500">إضافة سنة أكاديمية جديدة للنظام</p>
+            </a>
+
+            <!-- إضافة مادة دراسية -->
+            <a href="{% url 'add_subject' %}" class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-blue-400 transition-colors flex flex-col items-center text-center">
+                <div class="bg-blue-50 p-3 rounded-full mb-4">
+                    <i data-lucide="book-open" class="w-8 h-8 text-blue-600"></i>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">إضافة مادة دراسية</h3>
+                <p class="text-sm text-gray-500">إضافة مواد جديدة للأقسام المختلفة</p>
+            </a>
+
+            
+
+            <!-- إضافة مرحلة -->
+            <a href="{% url 'add_stage' %}" class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-purple-400 transition-colors flex flex-col items-center text-center">
+                <div class="bg-purple-50 p-3 rounded-full mb-4">
+                    <i data-lucide="layers" class="w-8 h-8 text-purple-600"></i>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">إضافة مرحلة</h3>
+                <p class="text-sm text-gray-500">إضافة مراحل جديدة لمسار القبول</p>
+            </a>
+        </div>
+
+        <!-- القوائم الحالية -->
+        <div class="space-y-8">
+            <!-- قائمة الأقسام -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+                <div class="p-4 border-b border-gray-100 flex justify-between items-center">
+                    <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                        <i data-lucide="building-2" class="w-5 h-5 ml-2 text-green-600"></i>
+                        الأقسام
+                    </h3>
+                    <span class="text-sm text-gray-500">{{ departments.count }} قسم</span>
+                </div>
+                <div class="divide-y divide-gray-200">
+                    {% for dept in departments %}
+                    <div class="p-4 flex justify-between items-center hover:bg-gray-50">
+                        <div>
+                            <h4 class="font-medium">{{ dept.name }}</h4>
+                        </div>
+                        <div class="flex space-x-2 rtl:space-x-reverse">
+                            <a href="{% url 'edit_department' dept.id %}" class="text-green-600 hover:text-green-800">
+                                <i data-lucide="edit" class="w-5 h-5"></i>
+                            </a>
+                            <a href="{% url 'delete_department' dept.id %}" class="text-red-600 hover:text-red-800">
+                                <i data-lucide="trash-2" class="w-5 h-5"></i>
+                            </a>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="p-4 text-center text-gray-500">لا توجد أقسام</div>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- قائمة الأعوام الدراسية -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+                <div class="p-4 border-b border-gray-100 flex justify-between items-center">
+                    <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                        <i data-lucide="calendar" class="w-5 h-5 ml-2 text-yellow-600"></i>
+                        الأعوام الدراسية
+                    </h3>
+                    <span class="text-sm text-gray-500">{{ academic_years.count }} عام</span>
+                </div>
+                <div class="divide-y divide-gray-200">
+                    {% for year in academic_years %}
+                    <div class="p-4 flex justify-between items-center hover:bg-gray-50">
+                        <div>
+                            <h4 class="font-medium">{{ year.year }}</h4>
+                            <p class="text-sm text-gray-500">{{ year.department }}</p>
+                        </div>
+                        <div class="flex space-x-2 rtl:space-x-reverse">
+                            <a href="{% url 'edit_academic_year' year.id %}" class="text-yellow-600 hover:text-yellow-800">
+                                <i data-lucide="edit" class="w-5 h-5"></i>
+                            </a>
+                            <a href="{% url 'delete_academic_year' year.id %}" class="text-red-600 hover:text-red-800">
+                                <i data-lucide="trash-2" class="w-5 h-5"></i>
+                            </a>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="p-4 text-center text-gray-500">لا توجد أعوام دراسية</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- قائمة المواد الدراسية -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+                <div class="p-4 border-b border-gray-100 flex justify-between items-center">
+                    <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                        <i data-lucide="book-open" class="w-5 h-5 ml-2 text-blue-600"></i>
+                        المواد الدراسية
+                    </h3>
+                    <span class="text-sm text-gray-500">{{ subjects.count }} مادة</span>
+                </div>
+                <div class="divide-y divide-gray-200">
+                    {% for subject in subjects %}
+                    <div class="p-4 flex justify-between items-center hover:bg-gray-50">
+                        <div>
+                            <h4 class="font-medium">{{ subject.name }}</h4>
+                            <p class="text-sm text-gray-500">{{ subject.department }} - {{ subject.get_material_type_display }}</p>
+                        </div>
+                        <div class="flex space-x-2 rtl:space-x-reverse">
+                            <a href="{% url 'edit_subject' subject.id %}" class="text-blue-600 hover:text-blue-800">
+                                <i data-lucide="edit" class="w-5 h-5"></i>
+                            </a>
+                            <a href="{% url 'delete_subject' subject.id %}" class="text-red-600 hover:text-red-800">
+                                <i data-lucide="trash-2" class="w-5 h-5"></i>
+                            </a>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="p-4 text-center text-gray-500">لا توجد مواد دراسية</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            
+
+            <!-- قائمة المراحل -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+                <div class="p-4 border-b border-gray-100 flex justify-between items-center">
+                    <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                        <i data-lucide="layers" class="w-5 h-5 ml-2 text-purple-600"></i>
+                        المراحل
+                    </h3>
+                    <span class="text-sm text-gray-500">{{ stages.count }} مرحلة</span>
+                </div>
+                <div class="divide-y divide-gray-200">
+                    {% for stage in stages %}
+                    <div class="p-4 flex justify-between items-center hover:bg-gray-50">
+                        <div>
+                            <h4 class="font-medium">{{ stage.name }}</h4>
+                            <p class="text-sm text-gray-500">الترتيب: {{ stage.order }}</p>
+                        </div>
+                        <div class="flex space-x-2 rtl:space-x-reverse">
+                            <a href="{% url 'edit_stage' stage.id %}" class="text-purple-600 hover:text-purple-800">
+                                <i data-lucide="edit" class="w-5 h-5"></i>
+                            </a>
+                            <a href="{% url 'delete_stage' stage.id %}" class="text-red-600 hover:text-red-800">
+                                <i data-lucide="trash-2" class="w-5 h-5"></i>
+                            </a>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="p-4 text-center text-gray-500">لا توجد مراحل</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

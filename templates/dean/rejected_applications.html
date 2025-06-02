@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">الطلبات المرفوضة</h2>
+    
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="bg-light">
+                <tr>
+                    <th>اسم الطالب</th>
+                    <th>القسم</th>
+                    <th>العام الدراسي</th>
+                    <th>مرحلة الرفض</th>
+                    <th>تاريخ الرفض</th>
+                    <th>سبب الرفض</th>
+                    <th>تفاصيل</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for opinion in rejected_opinions %}
+                <tr>
+                    <td>{{ opinion.application_status.application.student.full_name }}</td>
+                    <td>{{ opinion.application_status.application.department.name }}</td>
+                    <td>{{ opinion.application_status.application.academic_year.year }}</td>
+                    <td>{{ opinion.application_status.stage.name }}</td>
+                    <td>{{ opinion.created_at|date:"Y-m-d" }}</td>
+                    <td>{{ opinion.description|truncatechars:50 }}</td>
+                    <td>
+                        <a href="{% url 'rejected_application_details' opinion.application_status.application.id %}" 
+                           class="btn btn-sm btn-info">
+                            عرض التفاصيل
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center">لا توجد طلبات مرفوضة</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

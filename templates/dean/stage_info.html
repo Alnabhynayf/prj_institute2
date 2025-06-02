@@ -1,0 +1,39 @@
+<!-- dean/stage_info.html -->
+<h2>تفاصيل المرحلة الحالية: المرحلة {{ stage_order }}</h2>
+
+<p><strong>اسم الطالب:</strong> {{ application.student.full_name }}</p>
+<p><strong>القسم:</strong> {{ application.department.name }}</p>
+
+{% if stage_order == 1 %}
+    <p>عرض معلومات الطالب الأساسية...</p>
+{% elif stage_order == 2 %}
+  <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>النتيجة:</strong> {{ stage_data.result|default:"-" }}</p>
+                            <p><strong>الحالة:</strong> 
+                                <span class="badge bg-{% if stage_data.is_fit %}success{% else %}danger{% endif %}">
+                                    {% if stage_data.is_fit %}لائق{% else %}غير لائق{% endif %}
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>ملاحظات:</strong> {{ stage_data.notes|default:"لا يوجد ملاحظات" }}</p>
+                        </div>
+                    </div>
+
+{% elif stage_order == 3 %}
+    <p>عرض معلومات الاختبارات التحريرية:</p>
+    {% for result in stage_results %}
+        <ul>
+        {% for subject, score in result.score.items %}
+            <li>{{ subject }}: {{ score }}</li>
+        {% endfor %}
+        </ul>
+    {% endfor %}
+{% elif stage_order == 4 %}
+    <p>عرض معلومات الاختبارات الشفوية (من نتائج المواد الشفوية)...</p>
+{% elif stage_order == 5 %}
+    <p>عرض معلومات المقابلات الشخصية...</p>
+{% else %}
+    <p>لا توجد معلومات محددة لهذه المرحلة.</p>
+{% endif %}

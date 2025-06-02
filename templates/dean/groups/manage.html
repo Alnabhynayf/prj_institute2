@@ -1,0 +1,172 @@
+{% extends 'dean/base_admin.html' %}
+{% load static %}
+
+{% block title %} إدارة المجموعات {% endblock %}
+
+{% block content %}
+<main class="max-w-7xl mx-auto px-6 py-8">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <h2 class="text-2xl font-bold flex items-center">
+        <i data-lucide="settings" class="w-6 h-6 text-yellow-600 ml-2"></i>
+        إدارة المجموعات
+      </h2>
+      <p class="text-gray-500 mt-2">تقسيم الطلبات إلى مجموعات حسب المراحل</p>
+    </div>
+    
+    <a href="{% url 'group_list' %}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center">
+      <i data-lucide="arrow-right" class="w-5 h-5 ml-2"></i>
+      العودة إلى القائمة
+    </a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <!-- Stages Sidebar -->
+    <div class="lg:col-span-1">
+      <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+        <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+          <h3 class="text-lg font-semibold flex items-center">
+            <i data-lucide="layers" class="w-5 h-5 text-yellow-600 ml-2"></i>
+            المراحل
+          </h3>
+        </div>
+        
+        <div class="divide-y divide-gray-200">
+          {% for stage in stages %}
+          <a href="?stage={{ stage.id }}" class="block px-6 py-4 hover:bg-gray-50 {% if selected_stage and selected_stage.id == stage.id %}bg-yellow-50{% endif %}">
+            <div class="flex items-center justify-between">
+              <div>
+                <h4 class="font-medium">{{ stage.name }}</h4>
+                <p class="text-sm text-gray-500">المرحلة {{ stage.order }}</p>
+              </div>
+              <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs">{{ stage.applications_count }}</span>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    
+    <!-- Stage Content -->
+    <div class="lg:col-span-3">
+      {% if selected_stage %}
+      <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+        <div class="px-6 py-4 bg-green-50 border-b border-gray-200">
+          <h3 class="text-lg font-semibold flex items-center">
+            <i data-lucide="git-branch" class="w-5 h-5 text-green-600 ml-2"></i>
+            تقسيم طلبات مرحلة {{ selected_stage.name }}
+          </h3>
+        </div>
+        
+        <div class="p-6">
+          <div class="mb-6">
+            <p class="text-gray-600 mb-4">
+              <span class="font-medium">عدد الطلبات في هذه المرحلة:</span> 
+              <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full">{{ statuses.count }}</span>
+            </p>
+            
+            <form method="post" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {% csrf_token %}
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">القدرة الاستيعابية لكل مجموعة *</label>
+                {{ form.capacity }}
+                {% if form.capacity.errors %}
+                  <p class="mt-1 text-sm text-red-600">{{ form.capacity.errors }}</p>
+                {% endif %}
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">عدد المجموعات المتوقعة</label>
+                <div class="relative">
+                  <input type="text" id="groups_count" value="{{ group_count }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100" readonly>
+                </div>
+              </div>
+              
+              <div class="md:col-span-2">
+                <button type="submit" class="px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 flex items-center">
+                  <i data-lucide="users" class="w-5 h-5 ml-2"></i>
+                  إنشاء المجموعات
+                </button>
+              </div>
+            </form>
+          </div>
+          
+          {% if statuses %}
+          <div>
+            <h4 class="text-lg font-semibold mb-4 flex items-center">
+              <i data-lucide="list" class="w-5 h-5 text-yellow-600 ml-2"></i>
+              الطلبات في هذه المرحلة
+            </h4>
+            
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">اسم الطالب</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">القسم</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">تاريخ التقديم</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  {% for status in statuses %}
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ forloop.counter }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                          <i data-lucide="user" class="w-4 h-4 text-blue-600"></i>
+                        </div>
+                        <div class="text-sm font-medium text-gray-900">{{ status.application.student.full_name }}</div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ status.application.department.name }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ status.created_at|date:"Y-m-d" }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% else %}
+      <div class="bg-white rounded-xl shadow-md border border-gray-100 p-8 text-center">
+        <div class="flex flex-col items-center justify-center py-8">
+          <i data-lucide="alert-circle" class="w-10 h-10 text-yellow-400 mb-3"></i>
+          <h3 class="text-lg font-medium mb-2">يرجى اختيار مرحلة</h3>
+          <p class="text-gray-500 mb-4">اختر مرحلة من القائمة الجانبية لعرض الطلبات وتقسيمها إلى مجموعات</p>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</main>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  lucide.createIcons();
+  
+  // حساب عدد المجموعات تلقائياً
+  document.addEventListener('DOMContentLoaded', function() {
+    const capacityInput = document.getElementById('{{ form.capacity.id_for_label }}');
+    const groupsCount = document.getElementById('groups_count');
+    
+    capacityInput.addEventListener('input', function() {
+      const capacity = parseInt(this.value) || 0;
+      const totalStatuses = {{ statuses.count }};
+      
+      if (capacity > 0) {
+        const count = Math.ceil(totalStatuses / capacity);
+        groupsCount.value = count;
+      } else {
+        groupsCount.value = 0;
+      }
+    });
+  });
+</script>
+{% endblock %}

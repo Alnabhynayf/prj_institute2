@@ -1,0 +1,226 @@
+{% extends 'committee/base_ad.html' %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="mb-8 flex justify-between items-center">
+    <h1 class="text-3xl font-bold text-gray-800">{{ page_title }}</h1>
+    <div class="text-sm text-gray-500 bg-gray-50 px-3 py-1 rounded-full">
+      {% now "j F Y" %}
+    </div>
+  </div>
+
+  <!-- قائمة تنقل بين المراحل - تصميم تبويبات متميز -->
+  <div class="mb-8 bg-white rounded-xl shadow-sm border border-gray-100 p-1">
+    <div class="flex overflow-x-auto">
+      {% for stage_key, stage in stages_data.items %}
+      <button onclick="showStage('{{ stage_key }}')" 
+        class="px-6 py-3 mx-1 rounded-lg font-medium stage-tab transition-all duration-200 flex-1 text-center min-w-max
+        {% if stage_key == 'stage2' %}
+          {% if forloop.first %}bg-blue-50 text-blue-700 border-b-2 border-blue-500 active-tab
+          {% else %}hover:bg-blue-50 text-blue-600{% endif %}
+        {% elif stage_key == 'stage3' %}
+          {% if forloop.first %}bg-yellow-50 text-yellow-700 border-b-2 border-yellow-500 active-tab
+          {% else %}hover:bg-yellow-50 text-yellow-600{% endif %}
+        {% elif stage_key == 'stage4' %}
+          {% if forloop.first %}bg-purple-50 text-purple-700 border-b-2 border-purple-500 active-tab
+          {% else %}hover:bg-purple-50 text-purple-600{% endif %}
+        {% else %}
+          {% if forloop.first %}bg-green-50 text-green-700 border-b-2 border-green-500 active-tab
+          {% else %}hover:bg-green-50 text-green-600{% endif %}
+        {% endif %}">
+        <div class="flex items-center justify-center">
+          <span class="mr-2">{{ stage.title }}</span>
+          <span class="bg-white rounded-full px-2 py-0.5 text-xs font-semibold
+            {% if stage_key == 'stage2' %}text-blue-700
+            {% elif stage_key == 'stage3' %}text-yellow-700
+            {% elif stage_key == 'stage4' %}text-purple-700
+            {% else %}text-green-700{% endif %}">
+            {{ stage.apps|length }}
+          </span>
+        </div>
+      </button>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- عرض كل مرحلة في قسم منفصل -->
+  {% for stage_key, stage in stages_data.items %}
+  <section id="{{ stage_key }}-section" class="mb-8 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden stage-section {% if not forloop.first %}hidden{% endif %}">
+    <!-- هيدر القسم -->
+    <div class="px-6 py-5 border-b border-gray-100 flex items-center">
+      <div class="w-3 h-8 rounded-full mr-4 
+        {% if stage_key == 'stage2' %}bg-blue-500
+        {% elif stage_key == 'stage3' %}bg-yellow-500
+        {% elif stage_key == 'stage4' %}bg-purple-500
+        {% else %}bg-green-500{% endif %}"></div>
+      <h2 class="text-xl font-semibold text-gray-800">{{ stage.title }}</h2>
+      <div class="ml-auto flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span class="text-sm text-gray-500">آخر تحديث: {% now "H:i" %}</span>
+      </div>
+    </div>
+
+    <!-- محتوى القسم -->
+    <div class="p-6">
+      <p class="text-gray-600 mb-6 px-2">{{ stage.description }}</p>
+
+      <!-- تصنيف الطلبات حسب الأقسام -->
+      {% regroup stage.apps by app.department.name as departments_list %}
+      
+      {% for department in departments_list %}
+      <div class="mb-8">
+        <div class="flex items-center mb-4 px-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+          </svg>
+          <h3 class="text-lg font-medium text-gray-800">قسم {{ department.grouper }}</h3>
+          <span class="mr-auto bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">
+            {{ department.list|length }} طلب
+          </span>
+        </div>
+        
+        {% if department.list %}
+        <div class="overflow-hidden rounded-lg border border-gray-200">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">رقم الطلب</th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">اسم الطالب</th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">تاريخ التقديم</th>
+                {% if stage_key == 'stage5' %}
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">النتيجة النهائية</th>
+                {% else %}
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">النتيجة</th>
+                {% endif %}
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الإجراءات</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              {% for item in department.list %}
+              <tr class="hover:bg-gray-50 transition-colors duration-150">
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ item.app.id }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.app.student.user }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {{ item.current_status.created_at|date:"Y-m-d" }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                  {% if item.stage_data %}
+                    {% if stage_key == 'stage2' %}
+                      {% if item.stage_data.is_fit %}
+                        <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 flex items-center justify-center w-20">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                          </svg>
+                          لائق
+                        </span>
+                      {% else %}
+                        <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800 flex items-center justify-center w-20">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                          </svg>
+                          غير لائق
+                        </span>
+                      {% endif %}
+                    {% else %}
+                      <div class="flex items-center">
+                        <div class="w-full bg-gray-200 rounded-full h-2 mr-2">
+                          <div class="bg-{% if stage_key == 'stage3' %}yellow-500{% elif stage_key == 'stage4' %}purple-500{% else %}green-500{% endif %} h-2 rounded-full" ></div>
+                        </div>
+                        <span class="text-gray-700 text-xs font-medium">{{ item.stage_data.total }}/100</span>
+                      </div>
+                    {% endif %}
+                  {% endif %}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <a href="{% url 'committee_review' item.app.id %}" 
+                     class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white 
+                            {% if stage_key == 'stage2' %}bg-blue-600 hover:bg-blue-700
+                            {% elif stage_key == 'stage3' %}bg-yellow-600 hover:bg-yellow-700
+                            {% elif stage_key == 'stage4' %}bg-purple-600 hover:bg-purple-700
+                            {% else %}bg-green-600 hover:bg-green-700{% endif %}">
+                    مراجعة
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="text-center py-8 bg-gray-50 rounded-lg border border-gray-200">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p class="mt-3 text-gray-500">لا توجد طلبات في هذا القسم حالياً</p>
+        </div>
+        {% endif %}
+      </div>
+      {% empty %}
+      <div class="text-center py-12 bg-gray-50 rounded-lg border border-gray-200">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-14 w-14 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <h3 class="mt-4 text-lg font-medium text-gray-700">لا توجد طلبات في هذه المرحلة</h3>
+        <p class="mt-1 text-gray-500">سيتم عرض الطلبات هنا عندما تتوفر</p>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endfor %}
+</div>
+
+<script>
+  function showStage(stageId) {
+    // إخفاء جميع أقسام المراحل
+    document.querySelectorAll('.stage-section').forEach(section => {
+      section.classList.add('hidden');
+    });
+    
+    // إظهار القسم المحدد فقط
+    document.getElementById(stageId + '-section').classList.remove('hidden');
+    
+    // تحديث التبويبات النشطة
+    document.querySelectorAll('.stage-tab').forEach(tab => {
+      tab.classList.remove('active-tab', 'border-b-2');
+      tab.classList.remove(
+        'bg-blue-50', 'text-blue-700', 'border-blue-500',
+        'bg-yellow-50', 'text-yellow-700', 'border-yellow-500',
+        'bg-purple-50', 'text-purple-700', 'border-purple-500',
+        'bg-green-50', 'text-green-700', 'border-green-500'
+      );
+      
+      // إضافة hover states
+      if (stageId === 'stage2') {
+        tab.classList.add('hover:bg-blue-50', 'text-blue-600');
+      } else if (stageId === 'stage3') {
+        tab.classList.add('hover:bg-yellow-50', 'text-yellow-600');
+      } else if (stageId === 'stage4') {
+        tab.classList.add('hover:bg-purple-50', 'text-purple-600');
+      } else {
+        tab.classList.add('hover:bg-green-50', 'text-green-600');
+      }
+    });
+    
+    // إضافة active-tab للتبويب المحدد
+    const activeTab = document.querySelector(`.stage-tab[onclick="showStage('${stageId}')"]`);
+    activeTab.classList.add('active-tab', 'border-b-2');
+    
+    if (stageId === 'stage2') {
+      activeTab.classList.add('bg-blue-50', 'text-blue-700', 'border-blue-500');
+    } else if (stageId === 'stage3') {
+      activeTab.classList.add('bg-yellow-50', 'text-yellow-700', 'border-yellow-500');
+    } else if (stageId === 'stage4') {
+      activeTab.classList.add('bg-purple-50', 'text-purple-700', 'border-purple-500');
+    } else {
+      activeTab.classList.add('bg-green-50', 'text-green-700', 'border-green-500');
+    }
+  }
+</script>
+
+
+{% endblock %}

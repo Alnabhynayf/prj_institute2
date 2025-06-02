@@ -1,0 +1,286 @@
+{% extends 'dean/base_admin.html' %}
+{% load static %}
+
+{% block title %} إدارة حسابات الموظفين {% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 p-8">
+    <div class="space-y-6">
+        <!-- Header -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl font-semibold text-gray-900 flex items-center">
+                    <i data-lucide="users" class="w-6 h-6 ml-2 text-yellow-600"></i>
+                    إدارة حسابات الموظفين
+                </h2>
+                <button onclick="openAddAccountModal()" class="flex items-center px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors">
+                    <i data-lucide="user-plus" class="w-5 h-5 ml-2"></i>
+                    إضافة موظف جديد
+                </button>
+            </div>
+        </div>
+
+        <div id="addAccountModal" class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 hidden animate-fade-in">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-4 border border-gray-100 overflow-hidden transform transition-all duration-300 ease-out scale-95 hover:scale-100" style="max-height: 90vh; overflow-y: auto;">
+                <!-- Header -->
+                <div class="p-6 border-b border-gray-100/50 flex items-center justify-between bg-gradient-to-r from-gray-50 to-white sticky top-0 bg-white z-10">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">إضافة موظف جديد</h3>
+                        <p class="text-sm text-gray-500 mt-1">املأ النموذج لإضافة موظف جديد إلى النظام</p>
+                    </div>
+                    <button onclick="closeAddAccountModal()" class="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            
+                <!-- Form Content -->
+                <form method="post" class="p-6 space-y-4">
+                    {% csrf_token %}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- User Data Section -->
+                        <div class="col-span-1 space-y-3">
+                            <div class="flex items-center space-x-2 rtl:space-x-reverse">
+                                <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
+                                    <i data-lucide="user" class="w-4 h-4 text-blue-500"></i>
+                                </div>
+                                <h5 class="text-base font-semibold text-gray-700">بيانات المستخدم</h5>
+                            </div>
+                            
+                            {% for field in user_form %}
+                            <div class="space-y-1">
+                                <label class="block text-sm font-medium text-gray-600">{{ field.label }}</label>
+                                <div class="relative">
+                                    {{ field }}
+                                    {% if field.help_text %}
+                                    <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                                        <i data-lucide="help-circle" class="w-4 h-4"></i>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                {% if field.errors %}
+                                <p class="text-xs text-red-500 mt-1">{{ field.errors|first }}</p>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+            
+                        <!-- Employee Data Section -->
+                        <div class="col-span-1 space-y-3">
+                            <div class="flex items-center space-x-2 rtl:space-x-reverse">
+                                <div class="w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center">
+                                    <i data-lucide="briefcase" class="w-4 h-4 text-purple-500"></i>
+                                </div>
+                                <h5 class="text-base font-semibold text-gray-700">بيانات الموظف</h5>
+                            </div>
+                            
+                            {% for field in employee_form %}
+                            <div class="space-y-1">
+                                <label class="block text-sm font-medium text-gray-600">{{ field.label }}</label>
+                                <div class="relative">
+                                    {{ field }}
+                                    {% if field.help_text %}
+                                    <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                                        <i data-lucide="help-circle" class="w-4 h-4"></i>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                {% if field.errors %}
+                                <p class="text-xs text-red-500 mt-1">{{ field.errors|first }}</p>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+            
+                    <!-- Form Footer -->
+                    <div class="flex justify-end space-x-3 rtl:space-x-reverse pt-4 border-t border-gray-100/50 sticky bottom-0 bg-white pb-4">
+                        <button type="button" onclick="closeAddAccountModal()" class="px-4 py-2 text-sm text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors flex items-center space-x-2 rtl:space-x-reverse">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                            <span>إلغاء</span>
+                        </button>
+                        <button type="submit" class="px-4 py-2 text-sm bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-lg hover:from-yellow-600 hover:to-yellow-700 transition-all shadow-sm hover:shadow-md flex items-center space-x-2 rtl:space-x-reverse">
+                            <i data-lucide="save" class="w-5 h-5"></i>
+                            <span>حفظ الموظف</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <!-- Search and Filters -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <div class="relative">
+                <div class="absolute inset-y-0 right-0 pl-3 flex items-center pointer-events-none">
+                    <i data-lucide="search" class="h-5 w-5 text-gray-400"></i>
+                </div>
+                <input type="text" class="block w-full pr-10 border border-gray-200 rounded-lg bg-gray-50 py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500" placeholder="بحث باسم الموظف أو البريد الإلكتروني...">
+            </div>
+        </div>
+
+        <!-- Employees List -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">#</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">اسم المستخدم</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">الاسم</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">الدور</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">الهاتف</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">البريد الإلكتروني</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for employee in employees %}
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ forloop.counter }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ employee.user.username }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center">
+                                        <i data-lucide="user" class="h-5 w-5 text-yellow-600"></i>
+                                    </div>
+                                    <div class="mr-4">
+                                        <div class="text-sm font-medium text-gray-900">{{ employee.name }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                    {% if employee.role == 'admin' %}bg-purple-100 text-purple-800
+                                    {% elif employee.role == 'committee' %}bg-blue-100 text-blue-800
+                                    {% elif employee.role == 'data_entry' %}bg-green-100 text-green-800
+                                    {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                    {{ employee.get_role_display }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ employee.phone }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ employee.email }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <div class="flex items-center space-x-3 rtl:space-x-reverse">
+                                    <a href="{% url 'edit_employee' employee.user_id %}" class="text-yellow-600 hover:text-yellow-800">
+                                        <i data-lucide="pencil" class="w-5 h-5"></i>
+                                    </a>
+                                    <a href="{% url 'delete_employee' employee.user_id %}" class="text-red-600 hover:text-red-800">
+                                        <i data-lucide="trash-2" class="w-5 h-5"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500">لا يوجد موظفين مسجلين</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if employees.has_other_pages %}
+            <div class="flex items-center justify-between p-6 border-t border-gray-200">
+                <div class="flex items-center">
+                    <p class="text-sm text-gray-700">
+                        عرض <span class="font-medium">{{ employees.start_index }}</span> إلى 
+                        <span class="font-medium">{{ employees.end_index }}</span> من أصل 
+                        <span class="font-medium">{{ employees.paginator.count }}</span> موظف
+                    </p>
+                </div>
+                <div class="flex items-center space-x-2 rtl:space-x-reverse">
+                    {% if employees.has_previous %}
+                    <a href="?page={{ employees.previous_page_number }}" class="px-3 py-1 rounded-md bg-white text-gray-500 border border-gray-300 hover:bg-gray-50">
+                        <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                    </a>
+                    {% endif %}
+                    
+                    {% for i in employees.paginator.page_range %}
+                    {% if employees.number == i %}
+                    <span class="px-3 py-1 rounded-md bg-yellow-50 text-yellow-600 border border-yellow-200 hover:bg-yellow-100">{{ i }}</span>
+                    {% else %}
+                    <a href="?page={{ i }}" class="px-3 py-1 rounded-md bg-white text-gray-500 border border-gray-300 hover:bg-gray-50">{{ i }}</a>
+                    {% endif %}
+                    {% endfor %}
+                    
+                    {% if employees.has_next %}
+                    <a href="?page={{ employees.next_page_number }}" class="px-3 py-1 rounded-md bg-white text-gray-500 border border-gray-300 hover:bg-gray-50">
+                        <i data-lucide="chevron-left" class="w-5 h-5"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Modals -->
+<script>
+    function openAddAccountModal() {
+        document.getElementById('addAccountModal').classList.remove('hidden');
+    }
+
+    function closeAddAccountModal() {
+        document.getElementById('addAccountModal').classList.add('hidden');
+    }
+</script>
+
+<!-- Add this CSS to style the form fields -->
+<style>
+    /* Style for all input fields */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.375rem;
+        background-color: #f9fafb;
+        color: #111827;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    /* Focus state for inputs */
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    input[type="tel"]:focus,
+    select:focus,
+    textarea:focus {
+        outline: none;
+        border-color: #f59e0b;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        background-color: #ffffff;
+    }
+
+    /* Style for select dropdown */
+    select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.5rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+        padding-right: 2.5rem;
+    }
+
+    /* Style for error fields */
+    .error input,
+    .error select,
+    .error textarea {
+        border-color: #ef4444;
+    }
+
+    /* Style for required fields */
+    .required label:after {
+        content: " *";
+        color: #ef4444;
+    }
+</style>
+{% endblock %}

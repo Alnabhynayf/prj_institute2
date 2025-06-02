@@ -1,0 +1,739 @@
+{% extends 'student/base_s.html' %}
+{% load static %}
+
+{% block title %} صفحة تقديم طلب جديد {% endblock %}
+
+{% block content %}
+
+<div class="min-h-screen bg-gray-50 relative">
+  <!-- خلفية شفافة -->
+  <div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: url('https://images.unsplash.com/photo-1606503825008-909a67e63c3d?auto=format&fit=crop&q=80'); background-size: cover; background-position: center; filter: grayscale(100%);"></div>
+
+  <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    {% if has_existing_application %}
+      <!-- رسالة وجود طلب سابق -->
+      <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 text-center">
+        <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-yellow-100 mb-4">
+          <i data-lucide="alert-circle" class="w-8 h-8 text-yellow-600"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-2">طلب موجود مسبقاً</h2>
+        <p class="text-gray-600 mb-6">
+          لقد قمت بتقديم طلب بالفعل للسنة الأكاديمية {{ existing_academic_year.year }}.<br>
+          لا يمكن تقديم أكثر من طلب في نفس السنة الدراسية.
+        </p>
+        <div class="flex justify-center space-x-4">
+          <a href="{% url 'application_status' %}" class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-lg font-medium flex items-center">
+            <i data-lucide="file-text" class="w-5 h-5 ml-2"></i>
+            عرض حالة الطلب
+          </a>
+          <a href="{% url 'home' %}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-3 rounded-lg font-medium flex items-center">
+            <i data-lucide="home" class="w-5 h-5 ml-2"></i>
+            الصفحة الرئيسية
+          </a>
+        </div>
+      </div>
+    {% else %}
+    <!-- بطاقة تقديم الطلب -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 relative overflow-hidden">
+      <!-- دوائر زخرفية -->
+      <div class="absolute w-24 h-24 bg-yellow-100 rounded-full -top-12 -left-12"></div>
+      <div class="absolute w-24 h-24 bg-yellow-100 rounded-full -bottom-12 -right-12"></div>
+
+      <!-- شعار -->
+      <div class="flex justify-center mb-6">
+        <div class="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 p-4 rounded-full">
+          <i data-lucide="scale" class="w-8 h-8 text-yellow-600"></i>
+        </div>
+      </div>
+
+      <!-- عنوان -->
+      <div class="text-center mb-8">
+        <h2 class="text-2xl font-bold text-gray-900">تقديم طلب جديد</h2>
+        <p class="text-gray-600 mt-2">املأ النموذج التالي لتقديم طلب الالتحاق</p>
+      </div>
+
+      <!-- نموذج الطلب -->
+      <form method="post" enctype="multipart/form-data" class="space-y-8">
+        {% csrf_token %}
+
+        <!-- رسائل الخطأ -->
+        {% if form.errors %}
+        <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
+          <div class="flex items-center">
+            <i data-lucide="alert-circle" class="w-6 h-6 text-red-600"></i>
+            <h3 class="text-lg font-semibold text-red-800 ml-2">خطأ في الإدخال</h3>
+          </div>
+          <p class="text-sm text-red-700 mt-2">
+            يوجد أخطاء في بعض الحقول. يرجى مراجعة البيانات المدخلة وتصحيح الأخطاء.
+          </p>
+        </div>
+        {% endif %}
+
+        <!-- تنبيه هام -->
+        <div class="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-xl p-6 border border-yellow-200 shadow-sm mb-6">
+          <div class="flex items-center">
+            <i data-lucide="alert-triangle" class="w-6 h-6 text-yellow-600"></i>
+            <h3 class="text-lg font-semibold text-yellow-800 ml-2">تنبيه هام</h3>
+          </div>
+          <p class="text-sm text-gray-700 mt-2">
+            يرجى تحري الدقة والمصداقية في إدخال البيانات. أي بيانات غير صحيحة قد تؤدي إلى <span class="font-semibold text-yellow-800">عدم القبول</span> أو <span class="font-semibold text-yellow-800">الفصل مستقبلاً</span>.
+          </p>
+        </div>
+
+        <!-- البيانات الشخصية -->
+        <section class="bg-gray-50 rounded-xl p-6 border border-gray-100">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <i data-lucide="user" class="w-5 h-5 ml-2 text-yellow-600"></i>
+            البيانات الشخصية
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- الاسم الكامل -->
+            <div>
+              <label for="full_name" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                <i data-lucide="file-text" class="w-4 h-4 ml-1"></i> الاسم الكامل
+              </label>
+              <input type="text" name="full_name" id="full_name" required
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm placeholder:text-gray-500 focus:border-yellow-500 focus:ring-yellow-500">
+            </div>
+            <!-- اللقب -->
+            <div>
+              <label for="nickname" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                <i data-lucide="tag" class="w-4 h-4 ml-1"></i> اللقب
+              </label>
+              <input type="text" name="nickname" id="nickname"
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm placeholder:text-gray-500 focus:border-yellow-500 focus:ring-yellow-500">
+            </div>
+            <!-- الهاتف -->
+            <div>
+              <label for="phone" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                <i data-lucide="phone" class="w-4 h-4 ml-1"></i> رقم الهاتف
+              </label>
+              <input type="tel" name="phone" id="phone" required
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm placeholder:text-gray-500 focus:border-yellow-500 focus:ring-yellow-500">
+              <p class="mt-1 text-xs text-gray-500">مثال: +966501234567</p>
+            </div>
+            <!-- البريد الإلكتروني -->
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                <i data-lucide="mail" class="w-4 h-4 ml-1"></i> البريد الإلكتروني
+              </label>
+              <input type="email" name="email" id="email" required
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm placeholder:text-gray-500 focus:border-yellow-500 focus:ring-yellow-500">
+            </div>
+            <!-- الجنس -->
+            <div>
+              <label for="gender" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                <i data-lucide="venus-mars" class="w-4 h-4 ml-1"></i> الجنس
+              </label>
+              <select name="gender" id="gender" required
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500">
+                <option value="">اختر الجنس</option>
+                <option value="M">ذكر</option>
+                <option value="F">أنثى</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- بيانات الميلاد -->
+        <section class="bg-gray-50 rounded-xl p-6 border border-gray-100">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <i data-lucide="calendar" class="w-5 h-5 ml-2 text-yellow-600"></i>
+            بيانات الميلاد
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="birth_date" class="block text-sm font-medium text-gray-700 mb-1">تاريخ الميلاد</label>
+              <input type="date" name="birth_date" id="birth_date" required
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500">
+            </div>
+            <div>
+              <label for="birth_place" class="block text-sm font-medium text-gray-700 mb-1">مكان الميلاد</label>
+              <input type="text" name="birth_place" id="birth_place" required
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500">
+            </div>
+            <div>
+              <label for="governorate" class="block text-sm font-medium text-gray-700 mb-1">المحافظة</label>
+              <input type="text" name="governorate" id="governorate" required
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500">
+            </div>
+            <div>
+              <label for="district" class="block text-sm font-medium text-gray-700 mb-1">العزلة</label>
+              <input type="text" name="district" id="district" required
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500">
+            </div>
+            <div>
+              <label for="directorate" class="block text-sm font-medium text-gray-700 mb-1">المديرية</label>
+              <input type="text" name="directorate" id="directorate"
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500">
+            </div>
+          </div>
+        </section>
+
+        <!-- بيانات الأب -->
+        <section class="bg-gray-50 rounded-xl p-6 border border-gray-100">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <i data-lucide="user" class="w-5 h-5 ml-2 text-yellow-600"></i>
+            بيانات الأب
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="father_name" class="block text-sm font-medium text-gray-700 mb-1">اسم الأب</label>
+              <input type="text" name="father_name" id="father_name"
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500">
+            </div>
+            <div>
+              <label for="father_phone" class="block text-sm font-medium text-gray-700 mb-1">رقم هاتف الأب</label>
+              <input type="tel" name="father_phone" id="father_phone"
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500">
+            </div>
+            <div>
+              <label for="father_job" class="block text-sm font-medium text-gray-700 mb-1">عمل الأب</label>
+              <input type="text" name="father_job" id="father_job"
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500">
+            </div>
+            <div>
+              <label for="father_job_type" class="block text-sm font-medium text-gray-700 mb-1">نوع عمل الأب</label>
+              <input type="text" name="father_job_type" id="father_job_type"
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500">
+            </div>
+            <div>
+              <label for="father_work_place" class="block text-sm font-medium text-gray-700 mb-1">مكان عمل الأب</label>
+              <input type="text" name="father_work_place" id="father_work_place"
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500">
+            </div>
+            <div>
+              <label for="father_address" class="block text-sm font-medium text-gray-700 mb-1">سكن الأب</label>
+              <input type="text" name="father_address" id="father_address"
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500">
+            </div>
+          </div>
+        </section>
+
+        <!-- المعلومات الشخصية الإضافية -->
+        <section class="bg-gray-50 rounded-xl p-6 border border-gray-100">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <i data-lucide="user" class="w-5 h-5 ml-2 text-yellow-600"></i>
+            المعلومات الشخصية
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="marital_status" class="block text-sm font-medium text-gray-700 mb-1">الحالة الاجتماعية</label>
+              <select name="marital_status" id="marital_status" required
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500">
+                {% for value, label in marital_status_choices %}
+                  <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div>
+              <label for="current_address" class="block text-sm font-medium text-gray-700 mb-1">السكن الحالي</label>
+              <input type="text" name="current_address" id="current_address"
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500">
+            </div>
+            <div>
+              <label for="permanent_address" class="block text-sm font-medium text-gray-700 mb-1">السكن الدائم</label>
+              <input type="text" name="permanent_address" id="permanent_address" required
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500">
+            </div>
+            <div>
+              <label for="id_number" class="block text-sm font-medium text-gray-700 mb-1">رقم البطاقة</label>
+              <input type="text" name="id_number" id="id_number" required
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500">
+            </div>
+            <div>
+              <label for="id_type" class="block text-sm font-medium text-gray-700 mb-1">نوع البطاقة</label>
+              <select name="id_type" id="id_type" required
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500">
+                {% for value, label in id_type_choices %}
+                  <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div>
+              <label for="id_issue_date" class="block text-sm font-medium text-gray-700 mb-1">تاريخ إصدار البطاقة</label>
+              <input type="date" name="id_issue_date" id="id_issue_date"
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500">
+            </div>
+            <div>
+              <label for="id_issue_place" class="block text-sm font-medium text-gray-700 mb-1">مكان إصدار البطاقة</label>
+              <input type="text" name="id_issue_place" id="id_issue_place"
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500">
+            </div>
+            <div>
+              <label for="current_job" class="block text-sm font-medium text-gray-700 mb-1">العمل الحالي</label>
+              <input type="text" name="current_job" id="current_job"
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500">
+            </div>
+            <div>
+              <label for="work_place" class="block text-sm font-medium text-gray-700 mb-1">مكان العمل</label>
+              <input type="text" name="work_place" id="work_place"
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500">
+            </div>
+            <div>
+              <label for="employment_date" class="block text-sm font-medium text-gray-700 mb-1">تاريخ التوظيف</label>
+              <input type="date" name="employment_date" id="employment_date"
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500">
+            </div>
+            <div>
+              <label for="secondary_phone" class="block text-sm font-medium text-gray-700 mb-1">هاتف آخر</label>
+              <input type="tel" name="secondary_phone" id="secondary_phone"
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500">
+            </div>
+          </div>
+        </section>
+
+        <!-- المستندات المطلوبة -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+              <i data-lucide="file-text" class="w-5 h-5 ml-2 text-yellow-600"></i>
+              المستندات المطلوبة
+          </h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- ID Image -->
+              <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                      صورة البطاقة
+                      <span class="text-red-500">*</span>
+                  </label>
+                  <div class="dropzone border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-yellow-500 hover:bg-yellow-50 transition-colors"
+                       onclick="document.getElementById('id_image').click();">
+                      <div class="file-upload-content">
+                          <i data-lucide="file" class="w-10 h-10 text-gray-400 mx-auto mb-3"></i>
+                          <p class="text-sm text-gray-600">اسحب وأفلت الملف هنا أو انقر للاختيار</p>
+                          <p class="text-xs text-gray-500 mt-1">PDF, JPG, PNG (حتى 10MB)</p>
+                      </div>
+                  </div>
+                  <input type="file" name="id_image" id="id_image" class="hidden" required>
+              </div>
+
+              <!-- High School Certificate -->
+              <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                      صورة الشهادة الثانوية
+                      <span class="text-red-500">*</span>
+                  </label>
+                  <div class="dropzone border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-yellow-500 hover:bg-yellow-50 transition-colors"
+                       onclick="document.getElementById('high_school_certificate').click();">
+                      <div class="file-upload-content">
+                          <i data-lucide="file" class="w-10 h-10 text-gray-400 mx-auto mb-3"></i>
+                          <p class="text-sm text-gray-600">اسحب وأفلت الملف هنا أو انقر للاختيار</p>
+                          <p class="text-xs text-gray-500 mt-1">PDF, JPG, PNG (حتى 10MB)</p>
+                      </div>
+                  </div>
+                  <input type="file" name="high_school_certificate" id="high_school_certificate" class="hidden" required>
+              </div>
+
+              <!-- Grade Data -->
+              <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                      بيانات الدرجات
+                  </label>
+                  <div class="dropzone border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-yellow-500 hover:bg-yellow-50 transition-colors"
+                       onclick="document.getElementById('grade_data').click();">
+                      <div class="file-upload-content">
+                          <i data-lucide="file" class="w-10 h-10 text-gray-400 mx-auto mb-3"></i>
+                          <p class="text-sm text-gray-600">اسحب وأفلت الملف هنا أو انقر للاختيار</p>
+                          <p class="text-xs text-gray-500 mt-1">PDF, JPG, PNG (حتى 10MB)</p>
+                      </div>
+                  </div>
+                  <input type="file" name="grade_data" id="grade_data" class="hidden">
+              </div>
+
+              <!-- Criminal Record -->
+              <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                      الصحيفة الجنائية
+                      <span class="text-red-500">*</span>
+                  </label>
+                  <div class="dropzone border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-yellow-500 hover:bg-yellow-50 transition-colors"
+                       onclick="document.getElementById('criminal_record').click();">
+                      <div class="file-upload-content">
+                          <i data-lucide="file" class="w-10 h-10 text-gray-400 mx-auto mb-3"></i>
+                          <p class="text-sm text-gray-600">اسحب وأفلت الملف هنا أو انقر للاختيار</p>
+                          <p class="text-xs text-gray-500 mt-1">PDF, JPG, PNG (حتى 10MB)</p>
+                      </div>
+                  </div>
+                  <input type="file" name="criminal_record" id="criminal_record" class="hidden" required>
+              </div>
+
+              <!-- Birth Certificate -->
+              <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                      شهادة الميلاد
+                  </label>
+                  <div class="dropzone border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-yellow-500 hover:bg-yellow-50 transition-colors"
+                       onclick="document.getElementById('birth_certificate').click();">
+                      <div class="file-upload-content">
+                          <i data-lucide="file" class="w-10 h-10 text-gray-400 mx-auto mb-3"></i>
+                          <p class="text-sm text-gray-600">اسحب وأفلت الملف هنا أو انقر للاختيار</p>
+                          <p class="text-xs text-gray-500 mt-1">PDF, JPG, PNG (حتى 10MB)</p>
+                      </div>
+                  </div>
+                  <input type="file" name="birth_certificate" id="birth_certificate" class="hidden">
+              </div>
+          </div>
+        </div>
+
+        <!-- المؤهلات العلمية -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+              <i data-lucide="book-open" class="w-5 h-5 ml-2 text-yellow-600"></i>
+              المؤهلات العلمية
+          </h3>
+          
+          <div id="qualifications-container">
+              <!-- المؤهل الأول (مطلوب) -->
+              <div class="qualification-section mb-6 p-6 bg-gray-50 rounded-lg border border-gray-200">
+                  <h4 class="font-medium text-gray-700 mb-4 flex items-center">
+                      <i data-lucide="book" class="w-5 h-5 ml-2 text-yellow-600"></i>
+                      المؤهل الأول
+                  </h4>
+                  
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <!-- نوع المؤهل -->
+                      <div class="space-y-2">
+                          <label for="qualification_type_0" class="block text-sm font-medium text-gray-700">
+                              نوع المؤهل <span class="text-red-500">*</span>
+                          </label>
+                          <div class="relative">
+                              <select name="qualification_type_0" id="qualification_type_0" 
+                                      class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-gray-50 text-gray-700 transition-all" required>
+                                  <option value="">اختر نوع المؤهل</option>
+                                  {% for value, label in qualification_type_choices %}
+                                      <option value="{{ value }}">{{ label }}</option>
+                                  {% endfor %}
+                              </select>
+                              <i data-lucide="chevron-down" class="absolute left-3 top-3 text-gray-400 w-5 h-5 pointer-events-none"></i>
+                          </div>
+                      </div>
+                      
+                      <!-- الجامعة -->
+                      <div class="space-y-2">
+                          <label for="university_0" class="block text-sm font-medium text-gray-700">
+                              الجامعة <span class="text-red-500">*</span>
+                          </label>
+                          <div class="relative">
+                              <input type="text" name="university_0" id="university_0" placeholder="اسم الجامعة"
+                                     class="w-full px-4 py-2.5 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-gray-50 text-gray-700 transition-all" required>
+                              <i data-lucide="school" class="absolute left-3 top-3 text-gray-400 w-5 h-5"></i>
+                          </div>
+                      </div>
+                      
+                      <!-- المعدل -->
+                      <div class="space-y-2">
+                          <label for="gpa_0" class="block text-sm font-medium text-gray-700">
+                              المعدل <span class="text-red-500">*</span>
+                          </label>
+                          <div class="relative">
+                              <input type="number" step="0.01" min="0" max="4" name="gpa_0" id="gpa_0" placeholder="0.00 - 4.00"
+                                     class="w-full px-4 py-2.5 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-gray-50 text-gray-700 transition-all" required>
+                              <i data-lucide="percent" class="absolute left-3 top-3 text-gray-400 w-5 h-5"></i>
+                          </div>
+                      </div>
+                      
+                      <!-- تاريخ المؤهل -->
+                      <div class="space-y-2">
+                          <label for="qualification_date_0" class="block text-sm font-medium text-gray-700">
+                              تاريخ المؤهل <span class="text-red-500">*</span>
+                          </label>
+                          <div class="relative">
+                              <input type="date" name="qualification_date_0" id="qualification_date_0"
+                                     class="w-full px-4 py-2.5 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-gray-50 text-gray-700 transition-all" required>
+                              <i data-lucide="calendar" class="absolute left-3 top-3 text-gray-400 w-5 h-5"></i>
+                          </div>
+                      </div>
+                      
+                      <!-- التقدير -->
+                      <div class="space-y-2">
+                          <label for="grade_0" class="block text-sm font-medium text-gray-700">
+                              التقدير
+                          </label>
+                          <div class="relative">
+                              <input type="text" name="grade_0" id="grade_0" placeholder="مثال: ممتاز"
+                                     class="w-full px-4 py-2.5 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-gray-50 text-gray-700 transition-all">
+                              <i data-lucide="award" class="absolute left-3 top-3 text-gray-400 w-5 h-5"></i>
+                          </div>
+                      </div>
+                      
+                      <!-- صورة الشهادة -->
+                      <div class="space-y-2">
+                          <label for="certificate_image_0" class="block text-sm font-medium text-gray-700">
+                              صورة الشهادة <span class="text-red-500">*</span>
+                          </label>
+                          <div class="dropzone border-2 border-dashed border-gray-300 rounded-xl p-4 text-center cursor-pointer hover:border-yellow-500 hover:bg-yellow-50 transition-colors"
+                               onclick="document.getElementById('certificate_image_0').click();">
+                              <div class="file-upload-content">
+                                  <i data-lucide="file" class="w-8 h-8 text-gray-400 mx-auto mb-2"></i>
+                                  <p class="text-sm text-gray-600">اسحب وأفلت الملف هنا أو انقر للاختيار</p>
+                                  <p class="text-xs text-gray-500 mt-1">PDF, JPG, PNG (حتى 10MB)</p>
+                              </div>
+                          </div>
+                          <input type="file" name="certificate_image_0" id="certificate_image_0" class="hidden" required>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          <!-- زر إضافة مؤهل جديد -->
+          <div class="mt-4 flex items-center space-x-4 rtl:space-x-reverse">
+              <button type="button" id="add-qualification" 
+                      class="px-4 py-2 text-yellow-600 hover:text-yellow-700 bg-yellow-50 hover:bg-yellow-100 rounded-lg flex items-center transition-colors">
+                  <i data-lucide="plus-circle" class="w-5 h-5 ml-2"></i>
+                  إضافة مؤهل إضافي
+              </button>
+              <p class="text-xs text-gray-500">يمكنك إضافة حتى 3 مؤهلات كحد أقصى</p>
+          </div>
+        </div>
+
+        <!-- معلومات الطلب -->
+        <section class="bg-gray-50 rounded-xl p-6 border border-gray-100">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <i data-lucide="info" class="w-5 h-5 ml-2 text-yellow-600"></i>
+            معلومات الطلب
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="department" class="block text-sm font-medium text-gray-700 mb-1">القسم</label>
+              <select name="department" id="department" required
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500">
+                {% for dept in departments %}
+                  <option value="{{ dept.id }}">{{ dept.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div>
+              <label for="academic_year" class="block text-sm font-medium text-gray-700 mb-1">السنة الأكاديمية</label>
+              <select name="academic_year" id="academic_year" required
+                class="block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-sm focus:border-yellow-500 focus:ring-yellow-500">
+                {% for year in academicyear %}
+                  <option value="{{ year.id }}">{{ year.year }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- الإقرار -->
+        <section class="bg-gray-50 rounded-xl p-6 border border-gray-100">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <i data-lucide="alert-triangle" class="w-5 h-5 ml-2 text-yellow-600"></i>
+            الإقرار
+          </h3>
+          <div>
+            <label class="flex items-center">
+              <input type="checkbox" name="declaration" required
+                class="rounded border-gray-300 text-yellow-600 focus:ring-yellow-500">
+              <span class="ml-2 text-sm text-gray-700">
+                أقر بأن جميع البيانات والمعلومات المذكورة أعلاه صحيحة، وفي حالة وجود أي خطأ، أتحمل المسؤولية القانونية الكاملة.
+              </span>
+            </label>
+          </div>
+        </section>
+
+        <!-- زر الإرسال -->
+        <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center">
+          <i data-lucide="send" class="w-5 h-5 ml-2"></i>
+          تقديم الطلب
+        </button>
+      </form>
+    </div>
+      {% endif %}
+  </div>
+</div>
+
+<!-- JavaScript لإدارة المؤهلات -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const maxQualifications = 3;
+    let qualificationCount = 1;
+    
+    // زر إضافة مؤهل جديد
+    document.getElementById('add-qualification').addEventListener('click', function() {
+      if (qualificationCount >= maxQualifications) {
+        alert('لا يمكن إضافة أكثر من ' + maxQualifications + ' مؤهلات');
+        return;
+      }
+      
+      qualificationCount++;
+      const newIndex = qualificationCount - 1;
+      
+      const newQualification = document.createElement('div');
+      newQualification.className = 'qualification-section mb-6 p-4 bg-white rounded-lg border border-gray-200';
+      newQualification.innerHTML = `
+        <div class="flex justify-between items-center mb-3">
+          <h4 class="font-medium text-gray-700 flex items-center">
+            <i data-lucide="book" class="w-4 h-4 ml-2 text-yellow-600"></i>
+            المؤهل ${qualificationCount}
+          </h4>
+          <button type="button" class="text-red-500 hover:text-red-700 remove-qualification">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+          </button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="form-group">
+            <label for="qualification_type_${newIndex}" class="block text-sm font-medium text-gray-700 mb-1">نوع المؤهل</label>
+            <select name="qualification_type_${newIndex}" id="qualification_type_${newIndex}" class="block w-full rounded-lg border border-gray-200 bg-gray-50 py-2 px-3 text-sm placeholder:text-gray-500 focus:border-yellow-500 focus:ring-yellow-500">
+              <option value="">اختر نوع المؤهل</option>
+              {% for value, label in qualification_type_choices %}
+                  <option value="{{ value }}">{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="university_${newIndex}" class="block text-sm font-medium text-gray-700 mb-1">الجامعة</label>
+            <input type="text" name="university_${newIndex}" id="university_${newIndex}" placeholder="الجامعة" class="block w-full rounded-lg border border-gray-200 bg-gray-50 py-2 px-3 text-sm placeholder:text-gray-500 focus:border-yellow-500 focus:ring-yellow-500">
+          </div>
+          <div class="form-group">
+            <label for="gpa_${newIndex}" class="block text-sm font-medium text-gray-700 mb-1">المعدل</label>
+            <input type="number" step="0.01" min="0" max="4" name="gpa_${newIndex}" id="gpa_${newIndex}" placeholder="المعدل" class="block w-full rounded-lg border border-gray-200 bg-gray-50 py-2 px-3 text-sm placeholder:text-gray-500 focus:border-yellow-500 focus:ring-yellow-500">
+          </div>
+          <div class="form-group">
+            <label for="qualification_date_${newIndex}" class="block text-sm font-medium text-gray-700 mb-1">تاريخ المؤهل</label>
+            <input type="date" name="qualification_date_${newIndex}" id="qualification_date_${newIndex}" class="block w-full rounded-lg border border-gray-200 bg-gray-50 py-2 px-3 text-sm placeholder:text-gray-500 focus:border-yellow-500 focus:ring-yellow-500">
+          </div>
+          <div class="form-group">
+            <label for="grade_${newIndex}" class="block text-sm font-medium text-gray-700 mb-1">التقدير</label>
+            <input type="text" name="grade_${newIndex}" id="grade_${newIndex}" placeholder="التقدير" class="block w-full rounded-lg border border-gray-200 bg-gray-50 py-2 px-3 text-sm placeholder:text-gray-500 focus:border-yellow-500 focus:ring-yellow-500">
+          </div>
+          <div class="form-group">
+            <label for="certificate_image_${newIndex}" class="block text-sm font-medium text-gray-700 mb-1">صورة الشهادة</label>
+            <div class="file-upload-box" onclick="document.getElementById('certificate_image_${newIndex}').click();">
+                <div class="file-upload-content">
+                    <i data-lucide="file" class="w-6 h-6 text-gray-400"></i>
+                    <p class="text-sm text-gray-500 mt-2">اسحب وأفلت الملف هنا أو <span class="text-yellow-600">اختر ملف</span></p>
+                </div>
+            </div>
+            <input type="file" name="certificate_image_${newIndex}" id="certificate_image_${newIndex}" class="hidden">
+            <p class="text-xs text-gray-500 mt-2">PDF, JPG, PNG حتى 10MB</p>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('qualifications-container').appendChild(newQualification);
+      lucide.createIcons(); // لتحديث الأيقونات الجديدة
+    });
+    
+    // حذف مؤهل
+      document.addEventListener('click', function(e) {
+      if (e.target.closest('.remove-qualification')) {
+        if (qualificationCount <= 1) {
+          alert('يجب أن يكون هناك مؤهل واحد على الأقل');
+          return;
+        }
+        
+        e.target.closest('.qualification-section').remove();
+        qualificationCount--;
+      }
+    });
+  });
+</script>
+
+<script>
+  // دالة واحدة لتهيئة رفع الملفات
+  function setupFileUpload(inputId) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      const dropzone = input.previousElementSibling;
+  
+      input.addEventListener('change', function() {
+          if (this.files.length > 0) {
+              const file = this.files[0];
+              const fileSize = (file.size / 1024 / 1024).toFixed(2);
+  
+              dropzone.innerHTML = `
+                  <div class="flex flex-col items-center p-4">
+                      <i data-lucide="check-circle" class="w-10 h-10 text-green-500 mb-2"></i>
+                      <p class="text-sm font-medium text-gray-900 truncate w-full text-center">${file.name}</p>
+                      <p class="text-xs text-gray-500 mt-1">${fileSize} MB</p>
+                      <button type="button" class="mt-3 text-red-500 text-xs flex items-center hover:text-red-700"
+                              onclick="event.stopPropagation(); resetFileInput('${inputId}')">
+                          <i data-lucide="trash-2" class="w-4 h-4 ml-1"></i>
+                          إزالة الملف
+                      </button>
+                  </div>
+                  ${input.outerHTML}
+              `;
+  
+              lucide.createIcons();
+          }
+      });
+  }
+  
+  // دالة واحدة لإعادة تعيين حقل الملف
+  function resetFileInput(inputId) {
+      const input = document.getElementById(inputId);
+      const dropzone = input.parentElement;
+  
+      input.value = '';
+      dropzone.innerHTML = `
+          <div class="file-upload-content">
+              <i data-lucide="file" class="w-10 h-10 text-gray-400 mx-auto mb-3"></i>
+              <p class="text-sm text-gray-600">اسحب وأفلت الملف هنا أو انقر للاختيار</p>
+              <p class="text-xs text-gray-500 mt-1">PDF, JPG, PNG (حتى 10MB)</p>
+          </div>
+          ${input.outerHTML}
+      `;
+  
+      lucide.createIcons();
+  }
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    // معالجة عرض الملفات المختارة
+    document.querySelectorAll('input[type="file"]').forEach(input => {
+        input.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                const uploadBox = this.previousElementSibling;
+                uploadBox.innerHTML = `
+                    <div class="flex flex-col items-center p-2">
+                        <i data-lucide="check-circle" class="w-6 h-6 text-green-500 mb-1"></i>
+                        <p class="text-sm font-medium text-gray-900 truncate">${this.files[0].name}</p>
+                        <p class="text-xs text-gray-500">${(this.files[0].size / 1024 / 1024).toFixed(2)} MB</p>
+                    </div>
+                `;
+                lucide.createIcons();
+            }
+        });
+    });
+});
+ </script>
+
+<!-- CSS for File Upload Box -->
+<style>
+  .file-upload-box {
+    border: 2px dashed #e5e7eb;
+    border-radius: 0.75rem;
+    background-color: #f9fafb;
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .file-upload-box:hover {
+    border-color: #f59e0b;
+    background-color: #fef3c7;
+  }
+
+  .file-upload-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .file-upload-box i {
+    margin-bottom: 0.5rem;
+  }
+
+  .file-upload-box p {
+    margin: 0;
+  }
+
+  .file-upload-box input[type="file"] {
+    display: none;
+  }
+</style>
+{% endblock %}
+

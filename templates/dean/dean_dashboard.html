@@ -1,0 +1,186 @@
+{% extends 'dean/base_admin.html' %}
+{% load static %}
+{% block title %} تقارير العميد {% endblock %}
+
+{% block content %}
+<main class="max-w-7xl mx-auto px-4 py-8">
+  <h1 class="text-2xl font-bold mb-8 flex items-center">
+    <i data-lucide="bar-chart-3" class="w-7 h-7 ml-3 text-yellow-600"></i>
+    لوحة التقارير والإحصائيات
+  </h1>
+
+  <!-- إحصائيات عامة -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+    <div class="bg-white rounded-xl shadow p-6 text-center">
+      <div class="text-3xl font-bold text-yellow-600 mb-2">{{ total_applications }}</div>
+      <div class="text-gray-600">إجمالي الطلبات</div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-6 text-center">
+      <div class="text-3xl font-bold text-green-600 mb-2">{{ approved_count }}</div>
+      <div class="text-gray-600">طلبات مقبولة</div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-6 text-center">
+      <div class="text-3xl font-bold text-red-600 mb-2">{{ rejected_count }}</div>
+      <div class="text-gray-600">طلبات مرفوضة</div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-6 text-center">
+      <div class="text-3xl font-bold text-blue-600 mb-2">{{ pending_count }}</div>
+      <div class="text-gray-600">طلبات قيد الإجراء</div>
+    </div>
+  </div>
+
+  <!-- الطلبات حسب القسم -->
+  <div class="bg-white rounded-xl shadow p-6 mb-8">
+    <h2 class="text-lg font-semibold mb-4 flex items-center">
+      <i data-lucide="layers" class="w-5 h-5 ml-2 text-blue-500"></i>
+      الطلبات حسب القسم
+    </h2>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200 text-sm">
+        <thead>
+          <tr>
+            <th class="px-4 py-2 text-right text-gray-700">القسم</th>
+            <th class="px-4 py-2 text-right text-gray-700">عدد الطلبات</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for dept in dept_stats %}
+          <tr>
+            <td class="px-4 py-2">{{ dept.department__name }}</td>
+            <td class="px-4 py-2">{{ dept.total }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="2" class="text-center text-gray-400">لا توجد بيانات</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- الطلبات حسب المرحلة -->
+  <div class="bg-white rounded-xl shadow p-6 mb-8">
+    <h2 class="text-lg font-semibold mb-4 flex items-center">
+      <i data-lucide="flag" class="w-5 h-5 ml-2 text-purple-500"></i>
+      الطلبات حسب المرحلة
+    </h2>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200 text-sm">
+        <thead>
+          <tr>
+            <th class="px-4 py-2 text-right text-gray-700">المرحلة</th>
+            <th class="px-4 py-2 text-right text-gray-700">عدد الطلبات</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for stage in stage_stats %}
+          <tr>
+            <td class="px-4 py-2">{{ stage.stage__name }}</td>
+            <td class="px-4 py-2">{{ stage.total }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="2" class="text-center text-gray-400">لا توجد بيانات</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- أعضاء اللجنة -->
+  <div class="bg-white rounded-xl shadow p-6 mb-8">
+    <h2 class="text-lg font-semibold mb-4 flex items-center">
+      <i data-lucide="users" class="w-5 h-5 ml-2 text-green-500"></i>
+      أعضاء اللجنة وعدد الطلبات التي راجعوها
+    </h2>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200 text-sm">
+        <thead>
+          <tr>
+            <th class="px-4 py-2 text-right text-gray-700">الاسم</th>
+            <th class="px-4 py-2 text-right text-gray-700">عدد الطلبات التي راجعها</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for member in committee_stats %}
+          <tr>
+            <td class="px-4 py-2">{{ member.user__first_name }} {{ member.user__last_name }}</td>
+            <td class="px-4 py-2">{{ member.reviewed }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="2" class="text-center text-gray-400">لا توجد بيانات</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- إحصائيات الإعلانات -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+    <div class="bg-white rounded-xl shadow p-6 text-center">
+      <div class="text-2xl font-bold text-blue-600 mb-2">{{ announcements_total }}</div>
+      <div class="text-gray-600">إجمالي الإعلانات</div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-6 text-center">
+      <div class="text-2xl font-bold text-green-600 mb-2">{{ public_announcements }}</div>
+      <div class="text-gray-600">إعلانات عامة</div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-6 text-center">
+      <div class="text-2xl font-bold text-yellow-600 mb-2">{{ private_announcements }}</div>
+      <div class="text-gray-600">إعلانات خاصة</div>
+    </div>
+  </div>
+
+  <!-- أحدث الطلبات -->
+  <div class="bg-white rounded-xl shadow p-6 mb-8">
+    <h2 class="text-lg font-semibold mb-4 flex items-center">
+      <i data-lucide="clock" class="w-5 h-5 ml-2 text-gray-500"></i>
+      أحدث الطلبات
+    </h2>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200 text-sm">
+        <thead>
+          <tr>
+            <th class="px-4 py-2 text-right text-gray-700">اسم الطالب</th>
+            <th class="px-4 py-2 text-right text-gray-700">القسم</th>
+            <th class="px-4 py-2 text-right text-gray-700">تاريخ التقديم</th>
+            <th class="px-4 py-2 text-right text-gray-700">الحالة</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for app in latest_apps %}
+          <tr>
+            <td class="px-4 py-2">{{ app.student.full_name }}</td>
+            <td class="px-4 py-2">{{ app.department.name }}</td>
+            <td class="px-4 py-2">{{ app.application_date|date:"Y-m-d" }}</td>
+            <td class="px-4 py-2">
+              {% if app.status == 'approved' %}
+                <span class="text-green-600 font-bold">مقبول</span>
+              {% elif app.status == 'rejected' %}
+                <span class="text-red-600 font-bold">مرفوض</span>
+              {% else %}
+                <span class="text-blue-600 font-bold">قيد الإجراء</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" class="text-center text-gray-400">لا توجد بيانات</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- تصدير البيانات -->
+  <div class="flex gap-3 mb-6">
+    <a href="{% url 'dean_export_excel' %}" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center">
+      <i data-lucide="file-spreadsheet" class="w-5 h-5 ml-2"></i>
+      تصدير Excel
+    </a>
+    <a href="{% url 'dean_export_pdf' %}" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center">
+      <i data-lucide="file-text" class="w-5 h-5 ml-2"></i>
+      تصدير PDF
+    </a>
+  </div>
+</main>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+{% endblock %}

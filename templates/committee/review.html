@@ -1,0 +1,505 @@
+{% extends 'committee/base_ad.html' %}
+{% load static %}
+
+{% block title %} مراجعة الطلب #{{ application.id }} {% endblock %}
+
+{% block content %}
+<main class="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+  <!-- Header Section -->
+  <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
+    <div>
+      <h2 class="text-2xl font-bold flex items-center">
+        <i data-lucide="file-text" class="w-6 h-6 text-yellow-600 ml-2"></i>
+        مراجعة الطلب #{{ application.id }}
+      </h2>
+      <div class="flex items-center mt-2">
+        <span class="text-gray-500">المرحلة:</span>
+        <span class="mr-2 px-3 py-1 rounded-full text-xs font-medium 
+          {% if current_status.stage.order == 1 %}bg-blue-100 text-blue-800
+          {% elif current_status.stage.order == 2 %}bg-green-100 text-green-800
+          {% elif current_status.stage.order == 3 %}bg-purple-100 text-purple-800
+          {% elif current_status.stage.order == 4 %}bg-yellow-100 text-yellow-800
+          {% elif current_status.stage.order == 5 %}bg-pink-100 text-pink-800
+          {% else %}bg-gray-100 text-gray-800{% endif %}">
+          {{ current_status.stage.name }}
+        </span>
+        {% if current_status.is_returned and current_status.dean_notes %}
+        <span class="ml-2 px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
+          طلب معاد من العميد
+        </span>
+        {% endif %}
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="{% if request.user.is_student %}{% url 'student_dashboard' %}
+                {% elif request.user.employee.role == 'dean' %}{% url 'dean_dashboard' %}
+                {% elif request.user.employee.role == 'data_entry' %}{% url 'data_entry_dashboard' %}
+                {% elif request.user.employee.role == 'committee_member' %}{% url 'committee_dashboard' %}
+                {% else %}{% url 'home' %}{% endif %}" 
+         class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center">
+        <i data-lucide="arrow-right" class="w-5 h-5 ml-2"></i>
+        العودة
+      </a>
+    </div>
+  </div>
+
+  <!-- Basic Application Info -->
+  <div class="bg-white rounded-xl shadow border border-gray-100 p-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div>
+        <p class="text-sm text-gray-500 mb-1">اسم الطالب</p>
+        <p class="font-medium">{{ application.student.full_name }}</p>
+      </div>
+      <div>
+        <p class="text-sm text-gray-500 mb-1">القسم</p>
+        <p class="font-medium">{{ application.department }}</p>
+      </div>
+      <div>
+        <p class="text-sm text-gray-500 mb-1">تاريخ التقديم</p>
+        <p class="font-medium">{{ application.application_date|date:"Y-m-d" }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ملاحظات العميد للطلبات المعادة -->
+  {% if current_status.is_returned and current_status.dean_notes %}
+  <div class="bg-red-50 border border-red-200 rounded-xl p-5 mb-8">
+    <div class="flex items-center mb-2">
+      <i data-lucide="alert-octagon" class="w-5 h-5 text-red-600 ml-2"></i>
+      <span class="font-semibold text-red-700">ملاحظات العميد على الطلب المعاد:</span>
+    </div>
+    <div class="pl-7 text-red-800 text-sm leading-relaxed">
+      {{ current_status.dean_notes }}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- تفاصيل الطلب الكاملة (المرحلة الأولى فقط) -->
+  {% if current_status.stage.order == 1 %}
+  <div class="bg-white rounded-xl shadow border border-gray-100 p-6 mb-8">
+    <h3 class="text-lg font-semibold mb-4 flex items-center">
+      <i data-lucide="file-text" class="w-5 h-5 text-yellow-600 ml-2"></i>
+      تفاصيل الطلب الكاملة
+    </h3>
+    <!-- Personal Info -->
+    <div class="mb-8">
+      <h4 class="text-md font-semibold mb-3 border-b pb-2 flex items-center">
+        <i data-lucide="user" class="w-4 h-4 text-yellow-600 ml-2"></i>
+        المعلومات الشخصية
+      </h4>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div>
+          <p class="text-sm text-gray-500 mb-1">الاسم الكامل</p>
+          <p class="font-medium">{{ application.student.full_name }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">رقم الهوية</p>
+          <p class="font-medium">{{ application.personal_info.id_number }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">نوع الهوية</p>
+          <p class="font-medium">{{ application.personal_info.get_id_type_display }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">تاريخ إصدار الهوية</p>
+          <p class="font-medium">{{ application.personal_info.id_issue_date|date:"Y-m-d" }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">مكان إصدار الهوية</p>
+          <p class="font-medium">{{ application.personal_info.id_issue_place }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">الحالة الاجتماعية</p>
+          <p class="font-medium">{{ application.personal_info.get_marital_status_display }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">العنوان الحالي</p>
+          <p class="font-medium">{{ application.personal_info.current_address }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">العنوان الدائم</p>
+          <p class="font-medium">{{ application.personal_info.permanent_address }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">الهاتف الثانوي</p>
+          <p class="font-medium">{{ application.personal_info.secondary_phone }}</p>
+        </div>
+      </div>
+    </div>
+    <!-- Birth Info -->
+    <div class="mb-8">
+      <h4 class="text-md font-semibold mb-3 border-b pb-2 flex items-center">
+        <i data-lucide="calendar" class="w-4 h-4 text-yellow-600 ml-2"></i>
+        معلومات الميلاد
+      </h4>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div>
+          <p class="text-sm text-gray-500 mb-1">تاريخ الميلاد</p>
+          <p class="font-medium">{{ application.birth_info.birth_date|date:"Y-m-d" }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">مكان الميلاد</p>
+          <p class="font-medium">{{ application.birth_info.birth_place }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">المحافظة</p>
+          <p class="font-medium">{{ application.birth_info.governorate }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">المديرية</p>
+          <p class="font-medium">{{ application.birth_info.directorate }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">الحي/القرية</p>
+          <p class="font-medium">{{ application.birth_info.district }}</p>
+        </div>
+      </div>
+    </div>
+    <!-- Father Info -->
+    <div class="mb-8">
+      <h4 class="text-md font-semibold mb-3 border-b pb-2 flex items-center">
+        <i data-lucide="users" class="w-4 h-4 text-yellow-600 ml-2"></i>
+        معلومات الأب
+      </h4>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div>
+          <p class="text-sm text-gray-500 mb-1">اسم الأب</p>
+          <p class="font-medium">{{ application.father_info.father_name }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">هاتف الأب</p>
+          <p class="font-medium">{{ application.father_info.father_phone }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">وظيفة الأب</p>
+          <p class="font-medium">{{ application.father_info.father_job }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">نوع الوظيفة</p>
+          <p class="font-medium">{{ application.father_info.father_job_type }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">مكان العمل</p>
+          <p class="font-medium">{{ application.father_info.father_work_place }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">عنوان الأب</p>
+          <p class="font-medium">{{ application.father_info.father_address }}</p>
+        </div>
+      </div>
+    </div>
+    <!-- Employment Info -->
+    {% if application.personal_info.current_job %}
+    <div class="mb-8">
+      <h4 class="text-md font-semibold mb-3 border-b pb-2 flex items-center">
+        <i data-lucide="briefcase" class="w-4 h-4 text-yellow-600 ml-2"></i>
+        معلومات التوظيف
+      </h4>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div>
+          <p class="text-sm text-gray-500 mb-1">الوظيفة الحالية</p>
+          <p class="font-medium">{{ application.personal_info.current_job }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">مكان العمل</p>
+          <p class="font-medium">{{ application.personal_info.work_place }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">تاريخ التوظيف</p>
+          <p class="font-medium">{{ application.personal_info.employment_date|date:"Y-m-d" }}</p>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    <!-- Qualifications -->
+    <div class="mb-8">
+      <h4 class="text-md font-semibold mb-3 border-b pb-2 flex items-center">
+        <i data-lucide="award" class="w-4 h-4 text-yellow-600 ml-2"></i>
+        المؤهلات العلمية
+      </h4>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">نوع المؤهل</th>
+              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الجامعة</th>
+              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">التقدير</th>
+              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">المعدل</th>
+              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">تاريخ المؤهل</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            {% for qual in application.qualifications.all %}
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ qual.get_qualification_type_display }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ qual.university }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ qual.grade }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ qual.gpa }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ qual.qualification_date|date:"Y-m-d" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Documents -->
+    <div class="mb-8">
+      <h4 class="text-md font-semibold mb-3 border-b pb-2 flex items-center">
+        <i data-lucide="file" class="w-4 h-4 text-yellow-600 ml-2"></i>
+        المستندات المرفقة
+      </h4>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <p class="text-sm text-gray-500 mb-1">صورة الهوية</p>
+          {% if application.documents.id_image %}
+          <a href="{{ application.documents.id_image.url }}" target="_blank" class="text-blue-600 hover:underline flex items-center">
+            <i data-lucide="file-image" class="w-4 h-4 ml-2"></i> عرض الملف
+          </a>
+          {% else %}
+          <p class="text-gray-400">غير مرفق</p>
+          {% endif %}
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">شهادة الثانوية</p>
+          {% if application.documents.high_school_certificate %}
+          <a href="{{ application.documents.high_school_certificate.url }}" target="_blank" class="text-blue-600 hover:underline flex items-center">
+            <i data-lucide="file-text" class="w-4 h-4 ml-2"></i> عرض الملف
+          </a>
+          {% else %}
+          <p class="text-gray-400">غير مرفق</p>
+          {% endif %}
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">بيان الدرجات</p>
+          {% if application.documents.grade_data %}
+          <a href="{{ application.documents.grade_data.url }}" target="_blank" class="text-blue-600 hover:underline flex items-center">
+            <i data-lucide="file-text" class="w-4 h-4 ml-2"></i> عرض الملف
+          </a>
+          {% else %}
+          <p class="text-gray-400">غير مرفق</p>
+          {% endif %}
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">السجل الجنائي</p>
+          {% if application.documents.criminal_record %}
+          <a href="{{ application.documents.criminal_record.url }}" target="_blank" class="text-blue-600 hover:underline flex items-center">
+            <i data-lucide="file-text" class="w-4 h-4 ml-2"></i> عرض الملف
+          </a>
+          {% else %}
+          <p class="text-gray-400">غير مرفق</p>
+          {% endif %}
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">شهادة الميلاد</p>
+          {% if application.documents.birth_certificate %}
+          <a href="{{ application.documents.birth_certificate.url }}" target="_blank" class="text-blue-600 hover:underline flex items-center">
+            <i data-lucide="file-text" class="w-4 h-4 ml-2"></i> عرض الملف
+          </a>
+          {% else %}
+          <p class="text-gray-400">غير مرفق</p>
+          {% endif %}
+        </div>
+        {% for qual in application.qualifications.all %}
+        <div>
+          <p class="text-sm text-gray-500 mb-1">شهادة {{ qual.get_qualification_type_display }}</p>
+          {% if qual.certificate_image %}
+          <a href="{{ qual.certificate_image.url }}" target="_blank" class="text-blue-600 hover:underline flex items-center">
+            <i data-lucide="file-text" class="w-4 h-4 ml-2"></i> عرض الملف
+          </a>
+          {% else %}
+          <p class="text-gray-400">غير مرفق</p>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- نتائج المرحلة (لكل مرحلة غير الأولى) -->
+  {% if stage_data and current_status.stage.order > 1 %}
+  <div class="bg-white rounded-xl shadow border border-gray-100 p-6 mb-8">
+    <h3 class="text-lg font-semibold mb-4 flex items-center">
+      <i data-lucide="clipboard-check" class="w-5 h-5 text-green-600 ml-2"></i>
+      {% if current_status.stage.order == 2 %}نتيجة الفحص الطبي{% elif current_status.stage.order == 3 %}نتائج الاختبارات التحريرية{% elif current_status.stage.order == 4 %}نتائج المقابلة الشخصية{% elif current_status.stage.order == 5 %}نتيجة التقييم النهائي{% endif %}
+    </h3>
+    {% if current_status.stage.order == 2 %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <p class="text-sm text-gray-500 mb-1">النتيجة</p>
+        <span class="badge bg-{% if stage_data.is_fit %}success{% else %}danger{% endif %} px-3 py-1 rounded-full text-xs">
+          {% if stage_data.is_fit %}لائق{% else %}غير لائق{% endif %}
+        </span>
+      </div>
+      <div>
+        <p class="text-sm text-gray-500 mb-1">ملاحظات الفحص</p>
+        <p class="font-medium">{{ stage_data.notes|default:"-" }}</p>
+      </div>
+      {% if stage_data.file %}
+      <div class="md:col-span-2">
+        <p class="text-sm text-gray-500 mb-1">ملف الفحص الطبي</p>
+        <a href="{{ stage_data.file.url }}" target="_blank" class="text-blue-600 hover:underline flex items-center">
+          <i data-lucide="file-text" class="w-4 h-4 ml-2"></i> عرض الملف
+        </a>
+      </div>
+      {% endif %}
+    </div>
+    {% elif current_status.stage.order == 3 or current_status.stage.order == 4 %}
+    <div class="overflow-x-auto mb-4">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">المادة</th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الدرجة</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          {% for subject, score in stage_data.items %}
+            {% if subject != 'total' and subject != 'file' %}
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ subject }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ score }}</td>
+            </tr>
+            {% endif %}
+          {% endfor %}
+          <tr class="bg-gray-50">
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">المجموع</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ stage_data.total }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    {% if stage_data.file %}
+    <div>
+      <p class="text-sm text-gray-500 mb-1">ملف الاختبار</p>
+      <a href="{{ stage_data.file.url }}" target="_blank" class="text-blue-600 hover:underline flex items-center">
+        <i data-lucide="file-text" class="w-4 h-4 ml-2"></i> عرض الملف
+      </a>
+    </div>
+    {% endif %}
+    {% elif current_status.stage.order == 5 %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <p class="text-sm text-gray-500 mb-1">الدرجة النهائية</p>
+        <p class="font-medium">{{ stage_data.score|default:"-" }}</p>
+      </div>
+      <div>
+        <p class="text-sm text-gray-500 mb-1">ملاحظات</p>
+        <p class="font-medium">{{ stage_data.notes|default:"-" }}</p>
+      </div>
+      {% if stage_data.file %}
+      <div class="md:col-span-2">
+        <p class="text-sm text-gray-500 mb-1">ملف التقييم النهائي</p>
+        <a href="{{ stage_data.file.url }}" target="_blank" class="text-blue-600 hover:underline flex items-center">
+          <i data-lucide="file-text" class="w-4 h-4 ml-2"></i> عرض الملف
+        </a>
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <!-- Review Form -->
+  <div class="bg-white rounded-xl shadow border border-gray-100 p-6">
+    <h3 class="text-lg font-semibold mb-6 flex items-center">
+      <i data-lucide="edit" class="w-5 h-5 text-yellow-600 ml-2"></i>
+      مراجعة الطلب
+    </h3>
+    <form method="post" class="space-y-6" id="review-form">
+      {% csrf_token %}
+      <!-- Decision -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">القرار <span class="text-red-500">*</span></label>
+        <div class="flex items-center space-x-6 rtl:space-x-reverse">
+          <label class="inline-flex items-center">
+            <input type="radio" name="opinion" value="accept" class="h-4 w-4 text-yellow-600 focus:ring-yellow-500" required>
+            <span class="mr-2 text-green-600 font-medium">قبول</span>
+          </label>
+          <label class="inline-flex items-center">
+            <input type="radio" name="opinion" value="reject" class="h-4 w-4 text-yellow-600 focus:ring-yellow-500">
+            <span class="mr-2 text-red-600 font-medium">رفض</span>
+          </label>
+        </div>
+      </div>
+      <!-- Notes -->
+      <div>
+        <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">التعليقات <span class="text-red-500">*</span></label>
+        <textarea id="notes" name="notes" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent" required></textarea>
+      </div>
+      <!-- Form Actions -->
+      <div class="flex justify-end space-x-4 rtl:space-x-reverse">
+        <button type="reset" class="px-6 py-3 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 flex items-center">
+          <i data-lucide="rotate-ccw" class="w-5 h-5 ml-2"></i>
+          إعادة تعيين
+        </button>
+        <button type="submit" class="px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 flex items-center">
+          <i data-lucide="save" class="w-5 h-5 ml-2"></i>
+          حفظ التقييم
+        </button>
+      </div>
+    </form>
+  </div>
+</main>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  lucide.createIcons();
+  document.getElementById('review-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (this.checkValidity()) {
+      this.submit();
+      document.querySelector('main').style.display = 'none';
+      const successMsg = document.createElement('div');
+      successMsg.className = 'fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50';
+      successMsg.innerHTML = `
+        <div class="bg-white p-8 rounded-lg shadow-lg text-center">
+          <i data-lucide="check-circle" class="w-16 h-16 text-green-500 mx-auto mb-4"></i>
+          <h3 class="text-xl font-bold mb-2">تم حفظ التقييم بنجاح</h3>
+          <p class="text-gray-600 mb-4">سيتم إغلاق هذه الصفحة تلقائياً</p>
+        </div>
+      `;
+      document.body.appendChild(successMsg);
+      lucide.createIcons();
+      setTimeout(function() {
+        window.location.href = "{% url 'committee_dashboard' %}";
+      }, 2000);
+    } else {
+      this.classList.add('was-validated');
+    }
+  });
+</script>
+
+<style>
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    border-radius: 9999px;
+  }
+  .bg-success {
+    background-color: #ecfdf5;
+    color: #059669;
+  }
+  .bg-danger {
+    background-color: #fee2e2;
+    color: #dc2626;
+  }
+  .was-validated textarea:invalid {
+    border-color: #f87171;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23f87171'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23f87171' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem 1rem;
+  }
+  .was-validated textarea:invalid:focus {
+    border-color: #f87171;
+    box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.2);
+  }
+  .was-validated [type="radio"]:invalid {
+    color: #f87171;
+  }
+</style>
+{% endblock %}

@@ -1,0 +1,331 @@
+{% extends 'dean/base_admin.html' %}
+{% load static %}
+
+{% block title %} قائمة الإعلانات {% endblock %}
+
+{% block content %}
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+  <!-- Header Section -->
+  <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
+    <div>
+      <h2 class="text-2xl font-bold flex items-center">
+        <i data-lucide="megaphone" class="w-6 h-6 text-yellow-600 ml-2"></i>
+        قائمة الإعلانات
+      </h2>
+      <p class="text-gray-500 mt-2">عرض جميع الإعلانات المنشورة في النظام</p>
+    </div>
+    
+    <div class="flex items-center gap-3">
+      <div class="relative">
+        <input type="text" placeholder="ابحث في الإعلانات..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent w-full md:w-64">
+        <i data-lucide="search" class="absolute left-3 top-2.5 text-gray-400 w-5 h-5"></i>
+      </div>
+      <a href="{% url 'create_public_announcement' %}" class="px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 flex items-center whitespace-nowrap">
+        <i data-lucide="plus" class="w-5 h-5 ml-2"></i>
+        إنشاء إعلان جديد
+      </a>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-500">إجمالي الإعلانات</p>
+          <p class="text-2xl font-semibold mt-1">{{ announcements|length }}</p>
+        </div>
+        <div class="bg-yellow-100 p-3 rounded-lg">
+          <i data-lucide="megaphone" class="w-5 h-5 text-yellow-600"></i>
+        </div>
+      </div>
+    </div>
+    
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-500">إعلانات عامة</p>
+          <p class="text-2xl font-semibold mt-1">{{ public_count }}</p>
+        </div>
+        <div class="bg-green-100 p-3 rounded-lg">
+          <i data-lucide="globe" class="w-5 h-5 text-green-600"></i>
+        </div>
+      </div>
+    </div>
+    
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-500">إعلانات خاصة</p>
+          <p class="text-2xl font-semibold mt-1">{{ private_count }}</p>
+        </div>
+        <div class="bg-blue-100 p-3 rounded-lg">
+          <i data-lucide="lock" class="w-5 h-5 text-blue-600"></i>
+        </div>
+      </div>
+    </div>
+    
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-500">إعلانات هذا الشهر</p>
+          <p class="text-2xl font-semibold mt-1">{{ monthly_count }}</p>
+        </div>
+        <div class="bg-purple-100 p-3 rounded-lg">
+          <i data-lucide="calendar" class="w-5 h-5 text-purple-600"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Announcements Table -->
+  <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div class="flex items-center gap-3">
+        <div class="relative">
+          <select class="pl-10 pr-8 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent appearance-none">
+            <option>جميع الأنواع</option>
+            <option>عامة</option>
+            <option>خاصة</option>
+          </select>
+          <i data-lucide="filter" class="absolute left-3 top-2.5 text-gray-400 w-5 h-5"></i>
+          <i data-lucide="chevron-down" class="absolute right-3 top-2.5 text-gray-400 w-5 h-5 pointer-events-none"></i>
+        </div>
+        <div class="relative">
+          <select class="pl-10 pr-8 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent appearance-none">
+            <option>جميع التواريخ</option>
+            <option>هذا الأسبوع</option>
+            <option>هذا الشهر</option>
+          </select>
+          <i data-lucide="calendar" class="absolute left-3 top-2.5 text-gray-400 w-5 h-5"></i>
+          <i data-lucide="chevron-down" class="absolute right-3 top-2.5 text-gray-400 w-5 h-5 pointer-events-none"></i>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-3">
+        <button class="px-3 py-2 bg-gray-100 rounded-lg flex items-center text-sm">
+          <i data-lucide="download" class="w-4 h-4 ml-2"></i>
+          تصدير
+        </button>
+        <div class="flex items-center text-sm text-gray-500">
+          <i data-lucide="list" class="w-4 h-4 ml-2"></i>
+          <span>عرض {{ announcements|length }} من {{ total_count }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <div class="flex items-center justify-between">
+                العنوان
+                <button><i data-lucide="arrow-up-down" class="w-4 h-4 text-gray-400"></i></button>
+              </div>
+            </th>
+            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              النوع
+            </th>
+            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <div class="flex items-center justify-between">
+                التاريخ
+                <button><i data-lucide="arrow-up-down" class="w-4 h-4 text-gray-400"></i></button>
+              </div>
+            </th>
+            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              المجموعة
+            </th>
+            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              الطلاب
+            </th>
+            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              إجراءات
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          {% for item in announcements %}
+          <tr class="hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4">
+              <div class="flex items-center">
+                <div class="bg-yellow-100 p-2 rounded-lg mr-3">
+                  <i data-lucide="megaphone" class="w-4 h-4 text-yellow-600"></i>
+                </div>
+                <div>
+                  <div class="text-sm font-medium text-gray-900">{{ item.announcement.title }}</div>
+                  <div class="text-xs text-gray-500 line-clamp-1">{{ item.announcement.content|truncatechars:60 }}</div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                {% if item.is_public %}bg-green-100 text-green-800{% else %}bg-blue-100 text-blue-800{% endif %}">
+                {% if item.is_public %}عام{% else %}خاص{% endif %}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900">{{ item.announcement.created_at|date:"Y-m-d" }}</div>
+              <div class="text-xs text-gray-500">{{ item.announcement.created_at|time:"H:i" }}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              {% if item.group_info %}
+                <div class="flex items-center">
+                  <div class="bg-purple-100 p-2 rounded-lg mr-3">
+                    <i data-lucide="users" class="w-4 h-4 text-purple-600"></i>
+                  </div>
+                  <div class="text-sm">المجموعة {{ item.group_info.number }}</div>
+                </div>
+              {% else %}
+                <span class="text-sm text-gray-400">-</span>
+              {% endif %}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              {% if item.group_info %}
+                <div class="dropdown relative">
+                  <button class="dropdown-toggle px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center text-sm transition-colors">
+                    <span>عرض الطلاب ({{ item.group_info.students|length }})</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 mr-1"></i>
+                  </button>
+                  <div class="dropdown-menu hidden absolute right-0 mt-1 w-56 bg-white rounded-md shadow-lg z-10 border border-gray-200 divide-y divide-gray-100">
+                    <div class="px-4 py-2 text-xs text-gray-500 bg-gray-50">قائمة الطلاب</div>
+                    <div class="p-0 max-h-60 overflow-y-auto">
+                      {% for student in item.group_info.students %}
+                      <a href="{% url 'application_details' student.id %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
+                        <i data-lucide="user" class="w-4 h-4 ml-2 text-gray-400"></i>
+                        <span>{{ student.name }}</span>
+                      </a>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+              {% else %}
+                <span class="text-sm text-gray-400">-</span>
+              {% endif %}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <div class="flex items-center justify-end gap-2">
+                <button class="text-blue-600 hover:text-blue-900 p-1.5 rounded-full hover:bg-blue-50">
+                  <i data-lucide="eye" class="w-4 h-4"></i>
+                </button>
+                <button class="text-yellow-600 hover:text-yellow-900 p-1.5 rounded-full hover:bg-yellow-50">
+                  <i data-lucide="edit" class="w-4 h-4"></i>
+                </button>
+                <button class="text-red-600 hover:text-red-900 p-1.5 rounded-full hover:bg-red-50">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="px-6 py-12 text-center">
+              <div class="flex flex-col items-center justify-center text-gray-400">
+                <i data-lucide="alert-circle" class="w-12 h-12 mb-4"></i>
+                <p class="text-lg font-medium">لا توجد إعلانات متاحة</p>
+                <p class="text-sm mt-2">لم يتم العثور على أي إعلانات في النظام</p>
+                <a href="{% url 'create_public_announcement' %}" class="mt-4 px-6 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 flex items-center">
+                  <i data-lucide="plus" class="w-4 h-4 ml-2"></i>
+                  إنشاء إعلان جديد
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Pagination -->
+    <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+      <div class="flex-1 flex justify-between sm:hidden">
+        <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+          السابق
+        </a>
+        <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+          التالي
+        </a>
+      </div>
+      <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+        <div>
+          <p class="text-sm text-gray-700">
+            عرض
+            <span class="font-medium">1</span>
+            إلى
+            <span class="font-medium">10</span>
+            من
+            <span class="font-medium">{{ total_count }}</span>
+            نتائج
+          </p>
+        </div>
+        <div>
+          <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+            <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+              <span class="sr-only">السابق</span>
+              <i data-lucide="chevron-right" class="w-5 h-5"></i>
+            </a>
+            <a href="#" aria-current="page" class="z-10 bg-yellow-50 border-yellow-500 text-yellow-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+              1
+            </a>
+            <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+              2
+            </a>
+            <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+              3
+            </a>
+            <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+              <span class="sr-only">التالي</span>
+              <i data-lucide="chevron-left" class="w-5 h-5"></i>
+            </a>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  lucide.createIcons();
+  
+  // تفعيل القوائم المنسدلة
+  document.querySelectorAll('.dropdown-toggle').forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const dropdown = this.closest('.dropdown');
+      const menu = dropdown.querySelector('.dropdown-menu');
+      
+      // إغلاق جميع القوائم الأخرى
+      document.querySelectorAll('.dropdown-menu').forEach(m => {
+        if (m !== menu) m.classList.add('hidden');
+      });
+      
+      menu.classList.toggle('hidden');
+    });
+  });
+  
+  // إغلاق القوائم عند النقر خارجها
+  document.addEventListener('click', function() {
+    document.querySelectorAll('.dropdown-menu').forEach(menu => {
+      menu.classList.add('hidden');
+    });
+  });
+</script>
+
+<!-- <style>
+  .line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  select {
+    background-image: none;
+  }
+  
+  .dropdown-menu {
+    transition: all 0.2s ease;
+  }
+</style> -->
+{% endblock %}

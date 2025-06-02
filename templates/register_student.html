@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل حساب جديد - المعهد العالي للقضاء</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background-color: #f8fafc;
+    }
+    .form-input {
+      transition: all 0.3s ease;
+    }
+    .form-input:focus {
+      border-color: #f59e0b;
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #d97706, #f59e0b);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+  <!-- Main Container -->
+  <div class="w-full max-w-md">
+    <!-- Card -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+      <!-- Card Header -->
+      <div class="bg-gradient-to-r from-yellow-500 to-yellow-400 p-6 text-center">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-white rounded-full shadow-md mb-4">
+          <span class="mdi mdi-account-school text-3xl text-yellow-600"></span>
+        </div>
+        <h1 class="text-2xl font-bold text-white">تسجيل حساب جديد</h1>
+        <p class="text-yellow-100 mt-1">املأ النموذج لإنشاء حسابك</p>
+      </div>
+      
+      <!-- Card Body -->
+      <div class="p-6">
+        <!-- Error Messages -->
+        {% if messages %}
+          <div class="mb-6">
+            {% for message in messages %}
+              <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                <div class="flex items-center">
+                  <span class="mdi mdi-alert-circle-outline text-red-600 text-xl mr-2"></span>
+                  <div>
+                    <h3 class="text-sm font-medium text-red-800">{{ message }}</h3>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+        
+        {% if user_form.errors %}
+          <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg mb-6">
+            <div class="flex items-center">
+              <span class="mdi mdi-alert-circle-outline text-red-600 text-xl mr-2"></span>
+              <div>
+                <h3 class="text-sm font-medium text-red-800">يوجد أخطاء في النموذج</h3>
+                <ul class="mt-2 text-xs text-red-700 list-disc mr-4 space-y-1">
+                  {% for field in user_form %}
+                    {% for error in field.errors %}
+                      <li>{{ field.label }}: {{ error }}</li>
+                    {% endfor %}
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+        
+        <!-- Registration Form -->
+        <form method="post" class="space-y-5">
+          {% csrf_token %}
+          
+          <!-- Username Field -->
+          <div>
+            <label for="{{ user_form.username.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+              اسم المستخدم
+            </label>
+            <div class="relative">
+              {{ user_form.username }}
+              <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                <span class="mdi mdi-account-outline"></span>
+              </span>
+            </div>
+            {% if user_form.username.errors %}
+              <p class="mt-1 text-xs text-red-600">{{ user_form.username.errors.as_text }}</p>
+            {% else %}
+              <p class="mt-1 text-xs text-gray-500">يجب أن يكون اسم المستخدم فريداً</p>
+            {% endif %}
+          </div>
+          
+          <!-- Password Field -->
+          <div>
+            <label for="{{ user_form.password1.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+              كلمة المرور
+            </label>
+            <div class="relative">
+              {{ user_form.password1 }}
+              <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                <span class="mdi mdi-lock-outline"></span>
+              </span>
+              <button type="button" class="absolute left-10 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 toggle-password" data-target="{{ user_form.password1.id_for_label }}">
+                <span class="mdi mdi-eye-outline"></span>
+              </button>
+            </div>
+            {% if user_form.password1.errors %}
+              <p class="mt-1 text-xs text-red-600">{{ user_form.password1.errors.as_text }}</p>
+            {% else %}
+              <p class="mt-1 text-xs text-gray-500">يجب أن تحتوي على الأقل على 8 أحرف</p>
+            {% endif %}
+          </div>
+          
+          <!-- Password Confirmation Field -->
+          <div>
+            <label for="{{ user_form.password2.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+              تأكيد كلمة المرور
+            </label>
+            <div class="relative">
+              {{ user_form.password2 }}
+              <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                <span class="mdi mdi-lock-outline"></span>
+              </span>
+              <button type="button" class="absolute left-10 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 toggle-password" data-target="{{ user_form.password2.id_for_label }}">
+                <span class="mdi mdi-eye-outline"></span>
+              </button>
+            </div>
+            {% if user_form.password2.errors %}
+              <p class="mt-1 text-xs text-red-600">{{ user_form.password2.errors.as_text }}</p>
+            {% endif %}
+          </div>
+          
+          <!-- Terms Agreement -->
+          <div class="flex items-start">
+            <div class="flex items-center h-5">
+              <input id="agreeTerms" name="agreeTerms" type="checkbox" class="focus:ring-yellow-500 h-4 w-4 text-yellow-600 border-gray-300 rounded" required>
+            </div>
+            <div class="mr-3 text-sm">
+              <label for="agreeTerms" class="font-medium text-gray-700">أوافق على <a href="#" class="text-yellow-600 hover:text-yellow-700">الشروط والأحكام</a></label>
+            </div>
+          </div>
+          
+          <!-- Submit Button -->
+          <button type="submit" class="w-full btn-primary text-white py-2.5 px-4 rounded-lg font-medium transition-all flex items-center justify-center">
+            <span class="mdi mdi-account-plus-outline mr-2"></span>
+            إنشاء الحساب
+          </button>
+        </form>
+        
+        <!-- Login Link -->
+        <div class="mt-6 text-center">
+          <p class="text-sm text-gray-600">لديك حساب بالفعل؟
+            <a href="{% url 'login' %}" class="font-medium text-yellow-600 hover:text-yellow-700">سجل الدخول هنا</a>
+          </p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Footer Links -->
+    <div class="mt-6 text-center text-xs text-gray-500">
+      <div class="flex justify-center space-x-4">
+        <a href="#" class="hover:text-yellow-600">الشروط</a>
+        <a href="#" class="hover:text-yellow-600">الخصوصية</a>
+        <a href="#" class="hover:text-yellow-600">المساعدة</a>
+      </div>
+      <p class="mt-2">© 2023 المعهد العالي للقضاء. جميع الحقوق محفوظة.</p>
+    </div>
+  </div>
+
+  <script>
+    // Toggle password visibility
+    document.querySelectorAll('.toggle-password').forEach(button => {
+      button.addEventListener('click', function() {
+        const targetId = this.getAttribute('data-target');
+        const passwordInput = document.getElementById(targetId);
+        const icon = this.querySelector('.mdi');
+        
+        if (passwordInput.type === 'password') {
+          passwordInput.type = 'text';
+          icon.classList.remove('mdi-eye-outline');
+          icon.classList.add('mdi-eye-off-outline');
+        } else {
+          passwordInput.type = 'password';
+          icon.classList.remove('mdi-eye-off-outline');
+          icon.classList.add('mdi-eye-outline');
+        }
+      });
+    });
+    
+    // Add focus styles to form inputs
+    document.querySelectorAll('input').forEach(input => {
+      input.addEventListener('focus', function() {
+        this.parentElement.querySelector('.mdi').classList.add('text-yellow-500');
+      });
+      input.addEventListener('blur', function() {
+        this.parentElement.querySelector('.mdi').classList.remove('text-yellow-500');
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="card shadow">
+        <div class="card-header bg-danger text-white">
+            <h3 class="mb-0">
+                <i class="fas fa-ban me-2"></i>الطلبات المرفوضة
+            </h3>
+        </div>
+        <div class="card-body">
+            {% if rejected_apps %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>اسم الطالب</th>
+                            <th>القسم</th>
+                            <th>مرحلة الرفض</th>
+                            <th>تاريخ الرفض</th>
+                            <th>سبب الرفض</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in rejected_apps %}
+                        <tr>
+                            <td>{{ app.application.id }}</td>
+                            <td>{{ app.application.student.full_name }}</td>
+                            <td>{{ app.application.department.name }}</td>
+                            <td>
+                                <span class="badge bg-danger">{{ app.stage.name }}</span>
+                            </td>
+                            <td>{{ app.created_at|date:"Y-m-d" }}</td>
+                            <td>
+                                {% with opinion=app.committeeopinion_set.first %}
+                                    {{ opinion.description|truncatechars:30 }}
+                                {% endwith %}
+                            </td>
+                            <td>
+                                <a href="{% url 'application_details' app.application.id %}" 
+                                   class="btn btn-sm btn-info" title="التفاصيل">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-success text-center">
+                <i class="fas fa-check-circle fa-lg me-2"></i>
+                لا توجد طلبات مرفوضة حالياً
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

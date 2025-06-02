@@ -1,0 +1,35 @@
+{% extends 'dean/base_admin.html' %}
+{% load static %}
+
+{% block title %} تأكيد حذف الموظف {% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 p-8">
+    <div class="max-w-md mx-auto">
+        <div class="bg-white rounded-xl shadow-xl overflow-hidden">
+            <div class="p-6 bg-red-50 border-b border-red-100 flex items-center">
+                <i data-lucide="alert-triangle" class="w-6 h-6 ml-2 text-red-600"></i>
+                <h2 class="text-xl font-semibold text-red-800">تأكيد الحذف</h2>
+            </div>
+            
+            <div class="p-6 text-center">
+                <h5 class="text-lg font-medium text-gray-900 mb-2">هل أنت متأكد من رغبتك في حذف الموظف:</h5>
+                <p class="text-xl font-semibold text-gray-900">{{ employee.name }}</p>
+                <p class="text-sm text-gray-500 mt-1">({{ employee.get_role_display }})</p>
+                
+                <div class="mt-8 flex justify-center space-x-3 rtl:space-x-reverse">
+                    <form method="post" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+                            نعم، احذف
+                        </button>
+                    </form>
+                    <a href="{% url 'manage_accounts' %}" class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                        إلغاء
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

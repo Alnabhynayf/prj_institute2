@@ -1,0 +1,394 @@
+{% extends 'committee/base_ad.html' %}
+{% block title %} لوحة تقارير العضو {% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+  <!-- العنوان الرئيسي -->
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-600 ml-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+        لوحة تقارير العضو
+      </h1>
+      <p class="text-gray-600 mt-2">نظرة عامة على إحصائيات وأداء عضو اللجنة</p>
+    </div>
+    <div class="flex items-center space-x-3 rtl:space-x-reverse">
+      <span class="text-sm text-gray-500">آخر تحديث: {% now "Y-m-d H:i" %}</span>
+    </div>
+  </div>
+
+  <!-- بطاقات الإحصائيات -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 mb-8">
+    <!-- بطاقة إجمالي الطلبات -->
+    <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-sm p-5 border border-blue-100">
+      <div class="flex justify-between items-start">
+        <div>
+          <p class="text-sm font-medium text-blue-800 mb-1">إجمالي الطلبات</p>
+          <h3 class="text-2xl font-bold text-blue-900">{{ total_applications }}</h3>
+        </div>
+        <div class="p-2 rounded-lg bg-blue-200 text-blue-700">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+        </div>
+      </div>
+      <div class="mt-4 flex items-center text-sm text-blue-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+        </svg>
+        جميع الطلبات في النظام
+      </div>
+    </div>
+
+    <!-- بطاقة الطلبات المقيّمة -->
+    <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl shadow-sm p-5 border border-green-100">
+      <div class="flex justify-between items-start">
+        <div>
+          <p class="text-sm font-medium text-green-800 mb-1">طلبات قيّمها العضو</p>
+          <h3 class="text-2xl font-bold text-green-900">{{ total_reviewed }}</h3>
+        </div>
+        <div class="p-2 rounded-lg bg-green-200 text-green-700">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+      </div>
+      <div class="mt-4 flex items-center text-sm text-green-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+        تم تقييمها من قبلك
+      </div>
+    </div>
+
+    <!-- بطاقة الطلبات المنتظرة -->
+    <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl shadow-sm p-5 border border-yellow-100">
+      <div class="flex justify-between items-start">
+        <div>
+          <p class="text-sm font-medium text-yellow-800 mb-1">طلبات بانتظار تقييمك</p>
+          <h3 class="text-2xl font-bold text-yellow-900">{{ pending_applications }}</h3>
+        </div>
+        <div class="p-2 rounded-lg bg-yellow-200 text-yellow-700">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+      </div>
+      <div class="mt-4 flex items-center text-sm text-yellow-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        تحتاج إلى مراجعتك
+      </div>
+    </div>
+
+    <!-- بطاقة الطلبات المعادة -->
+    <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-xl shadow-sm p-5 border border-red-100">
+      <div class="flex justify-between items-start">
+        <div>
+          <p class="text-sm font-medium text-red-800 mb-1">طلبات معادة من العميد</p>
+          <h3 class="text-2xl font-bold text-red-900">{{ returned_count }}</h3>
+        </div>
+        <div class="p-2 rounded-lg bg-red-200 text-red-700">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        </div>
+      </div>
+      <div class="mt-4 flex items-center text-sm text-red-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        تحتاج إلى إعادة النظر
+      </div>
+    </div>
+
+    <!-- بطاقة الطلبات المتأخرة -->
+    <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl shadow-sm p-5 border border-orange-100">
+      <div class="flex justify-between items-start">
+        <div>
+          <p class="text-sm font-medium text-orange-800 mb-1">طلبات متأخرة</p>
+          <h3 class="text-2xl font-bold text-orange-900">{{ overdue_apps.count }}</h3>
+        </div>
+        <div class="p-2 rounded-lg bg-orange-200 text-orange-700">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+      </div>
+      <div class="mt-4 flex items-center text-sm text-orange-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        تجاوزت الوقت المحدد
+      </div>
+    </div>
+  </div>
+
+  <!-- تنبيهات مهمة -->
+  {% if overdue_apps %}
+  <div class="bg-red-50 border-l-4 border-red-500 rounded-lg p-4 mb-8 flex items-start">
+    <div class="flex-shrink-0">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+    </div>
+    <div class="mr-3">
+      <h3 class="text-sm font-semibold text-red-800 mb-1">تنبيه عاجل!</h3>
+      <div class="text-sm text-red-700">
+        لديك <span class="font-bold">{{ overdue_apps.count }}</span> طلباً متأخراً يحتاج إلى تقييمك الفوري.
+        <a href="#" class="font-medium underline hover:text-red-800">عرض الطلبات المتأخرة</a>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- الرسوم البيانية -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <!-- توزيع الطلبات حسب المرحلة -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-gray-800 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-purple-500 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          توزيع الطلبات حسب المرحلة
+        </h2>
+        <div class="flex items-center space-x-2 rtl:space-x-reverse">
+          <span class="text-xs text-gray-500">آخر تحديث</span>
+          <span class="text-xs font-medium bg-gray-100 px-2 py-1 rounded">{% now "H:i" %}</span>
+        </div>
+      </div>
+      <div class="h-64">
+        <canvas id="stageChart"></canvas>
+      </div>
+    </div>
+
+    <!-- توزيع الطلبات حسب الحالة -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-gray-800 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+          </svg>
+          توزيع الطلبات حسب الحالة
+        </h2>
+        <div class="flex items-center space-x-2 rtl:space-x-reverse">
+          <span class="text-xs text-gray-500">آخر تحديث</span>
+          <span class="text-xs font-medium bg-gray-100 px-2 py-1 rounded">{% now "H:i" %}</span>
+        </div>
+      </div>
+      <div class="h-64">
+        <canvas id="statusChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- أحدث الطلبات التي قيمها العضو -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+    <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-gray-800 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        أحدث الطلبات التي قيمتها
+      </h2>
+      <a href="#" class="text-sm text-blue-600 hover:text-blue-800 font-medium">عرض الكل</a>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">رقم الطلب</th>
+            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">اسم الطالب</th>
+            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">القسم</th>
+            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">تاريخ التقييم</th>
+            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">القرار</th>
+            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الإجراءات</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          {% for op in latest_reviewed %}
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{{ op.application_status.application.id }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ op.application_status.application.student.full_name }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ op.application_status.application.department.name }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ op.created_at|date:"Y-m-d H:i" }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              {% if op.opinion == 'accept' %}
+              <span class="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 flex items-center justify-center w-16">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                موافقة
+              </span>
+              {% else %}
+              <span class="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 flex items-center justify-center w-16">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                رفض
+              </span>
+              {% endif %}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <a href="#" class="text-blue-600 hover:text-blue-900">عرض التفاصيل</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">لا توجد طلبات مقيّمة بعد</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- الطلبات المنتظرة لتقييم العضو -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-gray-800 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-500 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        الطلبات المنتظرة لتقييمك
+      </h2>
+      <span class="text-sm text-gray-500">{{ pending_apps.count }} طلب</span>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">رقم الطلب</th>
+            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">اسم الطالب</th>
+            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">القسم</th>
+            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">تاريخ التقديم</th>
+            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الحالة</th>
+            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الإجراءات</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          {% for app in pending_apps %}
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{{ app.id }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ app.student.full_name }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ app.department.name }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ app.application_date|date:"Y-m-d" }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 flex items-center justify-center w-20">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                بانتظارك
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <a href="#" class="text-blue-600 hover:text-blue-900">مراجعة الطلب</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">لا توجد طلبات بانتظار تقييمك</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // رسم بياني للمرحلة
+  const stageCtx = document.getElementById('stageChart').getContext('2d');
+  new Chart(stageCtx, {
+    type: 'bar',
+    data: {
+      labels: {{ stage_labels|safe }},
+      datasets: [{
+        label: 'عدد الطلبات',
+        data: {{ stage_values|safe }},
+        backgroundColor: '#6366F1',
+        borderRadius: 6,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return ` ${context.raw} طلب`;
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { drawBorder: false },
+          ticks: {
+            callback: function(value) { return value % 1 === 0 ? value : ''; }
+          }
+        },
+        x: {
+          grid: { display: false }
+        }
+      }
+    }
+  });
+
+  // رسم بياني للحالة
+  const statusCtx = document.getElementById('statusChart').getContext('2d');
+  new Chart(statusCtx, {
+    type: 'doughnut',
+    data: {
+      labels: {{ status_labels|safe }},
+      datasets: [{
+        data: {{ status_values|safe }},
+        backgroundColor: ['#10B981', '#EF4444', '#F59E0B', '#3B82F6'],
+        borderWidth: 0,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '70%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          rtl: true,
+          labels: {
+            boxWidth: 12,
+            padding: 20,
+            usePointStyle: true,
+            pointStyle: 'circle',
+            font: {
+              family: 'Tajawal, sans-serif'
+            }
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const label = context.label || '';
+              const value = context.raw || 0;
+              const total = context.dataset.data.reduce((a, b) => a + b, 0);
+              const percentage = Math.round((value / total) * 100);
+              return `${label}: ${value} طلب (${percentage}%)`;
+            }
+          }
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}

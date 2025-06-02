@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">إنشاء حساب موظف</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- رسائل الخطأ -->
+                    {% if user_form.errors or employee_form.errors %}
+                        <div class="alert alert-danger">
+                            <strong>حدث خطأ!</strong> يرجى تصحيح الأخطاء أدناه.
+                            {% if user_form.non_field_errors %}
+                                {{ user_form.non_field_errors }}
+                            {% endif %}
+                            {% if employee_form.non_field_errors %}
+                                {{ employee_form.non_field_errors }}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    
+                    <h5 class="mb-3 border-bottom pb-2">بيانات الحساب</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ user_form.username.id_for_label }}" class="form-label">
+                                    {{ user_form.username.label }}
+                                </label>
+                                {{ user_form.username }}
+                                {% if user_form.username.errors %}
+                                    <div class="text-danger">{{ user_form.username.errors }}</div>
+                                {% endif %}
+                                <small class="form-text text-muted">اسم المستخدم يجب أن يكون فريدًا</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ user_form.password1.id_for_label }}" class="form-label">
+                                    {{ user_form.password1.label }}
+                                </label>
+                                {{ user_form.password1 }}
+                                {% if user_form.password1.errors %}
+                                    <div class="text-danger">{{ user_form.password1.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ user_form.password2.id_for_label }}" class="form-label">
+                                    {{ user_form.password2.label }}
+                                </label>
+                                {{ user_form.password2 }}
+                                {% if user_form.password2.errors %}
+                                    <div class="text-danger">{{ user_form.password2.errors }}</div>
+                                {% endif %}
+                                <small class="form-text text-muted">أعد إدخال كلمة المرور للتأكيد</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h5 class="mb-3 mt-4 border-bottom pb-2">بيانات الموظف</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ employee_form.name.id_for_label }}" class="form-label">
+                                    {{ employee_form.name.label }}
+                                </label>
+                                {{ employee_form.name }}
+                                {% if employee_form.name.errors %}
+                                    <div class="text-danger">{{ employee_form.name.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ employee_form.role.id_for_label }}" class="form-label">
+                                    {{ employee_form.role.label }}
+                                </label>
+                                {{ employee_form.role }}
+                                {% if employee_form.role.errors %}
+                                    <div class="text-danger">{{ employee_form.role.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ employee_form.phone.id_for_label }}" class="form-label">
+                                    {{ employee_form.phone.label }}
+                                </label>
+                                {{ employee_form.phone }}
+                                {% if employee_form.phone.errors %}
+                                    <div class="text-danger">{{ employee_form.phone.errors }}</div>
+                                {% endif %}
+                                <small class="form-text text-muted">رقم الهاتف يجب أن يبدأ بـ +966</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ employee_form.email.id_for_label }}" class="form-label">
+                                    {{ employee_form.email.label }}
+                                </label>
+                                {{ employee_form.email }}
+                                {% if employee_form.email.errors %}
+                                    <div class="text-danger">{{ employee_form.email.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 text-center">
+                        <button type="submit" class="btn btn-primary btn-lg px-5">
+                            <i class="fas fa-user-plus me-2"></i> إنشاء الحساب
+                        </button>
+                        <a href="{% if request.user.is_authenticated %}{% url 'home' %}{% else %}{% url 'login' %}{% endif %}" 
+                           class="btn btn-outline-secondary btn-lg px-5 ms-2">
+                            إلغاء
+                        </a>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                <p class="mb-0">لديك حساب بالفعل؟ <a href="{% url 'login' %}">سجل الدخول الآن</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript للتحقق من صحة البيانات قبل الإرسال -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const phoneField = document.getElementById('{{ employee_form.phone.id_for_label }}');
+    const emailField = document.getElementById('{{ employee_form.email.id_for_label }}');
+    const form = document.querySelector('form');
+    
+    // التحقق من صحة رقم الهاتف
+    phoneField.addEventListener('blur', function() {
+        const phoneRegex = /^\+966\d{9}$/;
+        if (!phoneRegex.test(this.value)) {
+            this.classList.add('is-invalid');
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'invalid-feedback';
+            errorDiv.textContent = 'يجب أن يبدأ رقم الهاتف بـ +966 ويتبعه 9 أرقام';
+            if (!this.nextElementSibling.classList.contains('invalid-feedback')) {
+                this.parentNode.insertBefore(errorDiv, this.nextElementSibling);
+            }
+        } else {
+            this.classList.remove('is-invalid');
+            if (this.nextElementSibling.classList.contains('invalid-feedback')) {
+                this.nextElementSibling.remove();
+            }
+        }
+    });
+    
+    // التحقق من صحة البريد الإلكتروني
+    emailField.addEventListener('blur', function() {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(this.value)) {
+            this.classList.add('is-invalid');
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'invalid-feedback';
+            errorDiv.textContent = 'البريد الإلكتروني غير صالح';
+            if (!this.nextElementSibling.classList.contains('invalid-feedback')) {
+                this.parentNode.insertBefore(errorDiv, this.nextElementSibling);
+            }
+        } else {
+            this.classList.remove('is-invalid');
+            if (this.nextElementSibling.classList.contains('invalid-feedback')) {
+                this.nextElementSibling.remove();
+            }
+        }
+    });
+    
+    // منع إرسال النموذج إذا كان هناك أخطاء
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        // التحقق من الحقول المطلوبة
+        const requiredFields = [
+            '{{ user_form.username.id_for_label }}',
+            '{{ user_form.password1.id_for_label }}',
+            '{{ user_form.password2.id_for_label }}',
+            '{{ employee_form.name.id_for_label }}',
+            '{{ employee_form.role.id_for_label }}',
+            '{{ employee_form.phone.id_for_label }}',
+            '{{ employee_form.email.id_for_label }}'
+        ];
+        
+        requiredFields.forEach(function(fieldId) {
+            const field = document.getElementById(fieldId);
+            if (!field.value.trim()) {
+                field.classList.add('is-invalid');
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'invalid-feedback';
+                errorDiv.textContent = 'هذا الحقل مطلوب';
+                if (!field.nextElementSibling.classList.contains('invalid-feedback')) {
+                    field.parentNode.insertBefore(errorDiv, field.nextElementSibling);
+                }
+                isValid = false;
+            }
+        });
+        
+        if (!isValid) {
+            e.preventDefault();
+            // التمرير إلى أول حقل به خطأ
+            const firstError = document.querySelector('.is-invalid');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    });
+});
+</script>
+
+<style>
+    /* تخصيصات إضافية للصفحة */
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    .card-header {
+        border-radius: 10px 10px 0 0 !important;
+        padding: 1.5rem;
+    }
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    .invalid-feedback {
+        display: block;
+        margin-top: 0.25rem;
+    }
+    .is-invalid {
+        border-color: #dc3545;
+    }
+    .border-bottom {
+        border-bottom: 2px solid #dee2e6 !important;
+    }
+</style>
+
+{% endblock %}

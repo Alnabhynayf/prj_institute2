@@ -1,0 +1,273 @@
+{% extends 'dean/base_admin.html' %}
+{% load static %}
+
+{% block title %}قرار العميد{% endblock %}
+
+{% block content %}
+<div class="container py-4" dir="rtl">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow border-0 mb-4">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0"><i class="fas fa-gavel ms-2"></i>قرار العميد</h4>
+                        <small>المرحلة الحالية: {{ current_status.stage.name }}</small>
+                    </div>
+                    <div class="badge bg-light text-primary fs-6">
+                        <i class="fas fa-user-graduate ms-1"></i> {{ application.student.full_name }}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row g-4 flex-column">
+                        <!-- معلومات الطالب -->
+                        <div class="col-12">
+                            <div class="card border-0 mb-3 shadow-sm">
+                                <div class="card-header bg-info text-white py-2">
+                                    <i class="fas fa-user-tie ms-2"></i>معلومات الطالب
+                                </div>
+                                <div class="card-body p-2">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item"><b><i class="fas fa-id-card ms-1"></i>الاسم:</b> {{ application.student.full_name }}</li>
+                                        <li class="list-group-item"><b><i class="fas fa-building ms-1"></i>القسم:</b> {{ application.department.name }}</li>
+                                        <li class="list-group-item"><b><i class="fas fa-calendar-alt ms-1"></i>العام الدراسي:</b> {{ application.academic_year.name }}</li>
+                                        <li class="list-group-item"><b><i class="fas fa-id-badge ms-1"></i>رقم الطالب:</b> {{ application.student.student_id }}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- نتائج المرحلة -->
+                            {% if stage_data %}
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-info text-white py-2">
+                                    <i class="fas fa-chart-line ms-2"></i>نتائج المرحلة
+                                </div>
+                                <div class="card-body p-2">
+                                    {% if current_status.stage.order == 2 %}
+                                        <div class="alert {% if stage_data.is_fit %}alert-success{% else %}alert-danger{% endif %} mb-2">
+                                            <b><i class="fas fa-heartbeat ms-1"></i>النتيجة الطبية:</b>
+                                            <span class="float-end">{% if stage_data.is_fit %}لائق{% else %}غير لائق{% endif %}</span>
+                                        </div>
+                                        <div>
+                                            <b><i class="fas fa-comment-alt ms-1"></i>الملاحظات:</b>
+                                            <div class="bg-light rounded p-2 mt-1">{{ stage_data.notes }}</div>
+                                        </div>
+                                    {% elif current_status.stage.order == 3 or current_status.stage.order == 4 %}
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-sm text-center align-middle">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>المادة</th>
+                                                        <th>الدرجة</th>
+                                                        <th>الحالة</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for subject, score in stage_data.items %}
+                                                        {% if subject != 'total' %}
+                                                        <tr class="{% if score >= 50 %}table-success{% else %}table-danger{% endif %}">
+                                                            <td>{{ subject }}</td>
+                                                            <td>{{ score }}</td>
+                                                            <td>
+                                                                {% if score >= 50 %}
+                                                                    <span class="badge bg-success">ناجح</span>
+                                                                {% else %}
+                                                                    <span class="badge bg-danger">راسب</span>
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr class="table-light">
+                                                        <th>المجموع الكلي</th>
+                                                        <th>{{ stage_data.total }}</th>
+                                                        <th>
+                                                            {% if stage_data.total >= 250 %}
+                                                                <span class="badge bg-success">مقبول</span>
+                                                            {% else %}
+                                                                <span class="badge bg-danger">مرفوض</span>
+                                                            {% endif %}
+                                                        </th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    {% elif current_status.stage.order == 5 %}
+                                        <div class="alert {% if stage_data.score >= 70 %}alert-success{% else %}alert-danger{% endif %} mb-2">
+                                            <b><i class="fas fa-star ms-1"></i>نتيجة المقابلة:</b>
+                                            <span class="float-end">{{ stage_data.score }} / 100</span>
+                                        </div>
+                                        <div>
+                                            <b><i class="fas fa-comment-alt ms-1"></i>ملاحظات المقابلة:</b>
+                                            <div class="bg-light rounded p-2 mt-1">{{ stage_data.notes }}</div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <!-- آراء اللجنة وقرار العميد -->
+                        <div class="col-12">
+                            <div class="card border-0 mb-3 shadow-sm">
+                                <div class="card-header bg-info text-white py-2">
+                                    <i class="fas fa-users ms-2"></i>آراء أعضاء اللجنة
+                                </div>
+                                <div class="card-body p-2">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-sm align-middle text-center mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>العضو</th>
+                                                    <th>الرأي</th>
+                                                    <th>التعليق</th>
+                                                    <th>التاريخ</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for opinion in committee_opinions %}
+                                                <tr>
+                                                    <td>
+                                                        <span class="badge rounded-pill bg-{% if opinion.opinion == 'accept' %}success{% else %}danger{% endif %} px-2">
+                                                            {{ opinion.employee.name|slice:":1" }}
+                                                        </span>
+                                                        <span class="ms-1">{{ opinion.employee.name }}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge bg-{% if opinion.opinion == 'accept' %}success{% else %}danger{% endif %}">
+                                                            {{ opinion.get_opinion_display }}
+                                                        </span>
+                                                    </td>
+                                                    <td>{{ opinion.description|truncatechars:30 }}</td>
+                                                    <td><small>{{ opinion.created_at|date:"Y-m-d" }}</small></td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- قرار العميد -->
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-warning text-dark py-2">
+                                    <i class="fas fa-tasks ms-2"></i>اتخاذ القرار النهائي
+                                </div>
+                                <div class="card-body p-2">
+                                    <form method="post" class="needs-validation" novalidate>
+                                        {% csrf_token %}
+                                        <div class="row g-2 mb-3">
+                                            <div class="col-md-4">
+                                                <input class="btn-check" type="radio" name="decision" id="accept" value="accept" required>
+                                                <label class="btn btn-outline-success w-100" for="accept">
+                                                    <i class="fas fa-check-circle"></i> قبول الطلب
+                                                    {% if next_stage %}
+                                                    <div class="small text-muted">التالي: {{ next_stage.name }}</div>
+                                                    {% endif %}
+                                                </label>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <input class="btn-check" type="radio" name="decision" id="reject" value="reject">
+                                                <label class="btn btn-outline-danger w-100" for="reject">
+                                                    <i class="fas fa-times-circle"></i> رفض الطلب
+                                                </label>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <input class="btn-check" type="radio" name="decision" id="resend" value="resend">
+                                                <label class="btn btn-outline-info w-100" for="resend">
+                                                    <i class="fas fa-redo"></i> إعادة المراجعة
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="notes" class="form-label"><i class="fas fa-comment-dots ms-1"></i>ملاحظات إضافية:</label>
+                                            <textarea class="form-control" id="notes" name="notes" rows="2" placeholder="أدخل أي ملاحظات إضافية هنا..."></textarea>
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            <button type="submit" class="btn btn-primary flex-fill">
+                                                <i class="fas fa-check-circle ms-1"></i> تأكيد القرار
+                                            </button>
+                                            <a href="#" class="btn btn-outline-secondary flex-fill">
+                                                <i class="fas fa-times ms-1"></i> إلغاء
+                                            </a>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-light text-end">
+                    <small class="text-muted">آخر تحديث: {% now "Y-m-d H:i" %}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+body {
+    background: #f7f9fa;
+}
+.card {
+    border-radius: 0.75rem;
+}
+.card-header {
+    border-radius: 0.75rem 0.75rem 0 0 !important;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+.table th, .table td {
+    vertical-align: middle !important;
+}
+.btn-check:checked + .btn {
+    box-shadow: 0 0 0 2px #0d6efd;
+    border-color: #0d6efd;
+}
+</style>
+
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+    const decision = document.querySelector('input[name="decision"]:checked');
+    if (!decision) {
+        e.preventDefault();
+        Swal.fire({
+            icon: 'error',
+            title: 'خطأ',
+            text: 'الرجاء اختيار قرار قبل المتابعة',
+            confirmButtonText: 'حسناً'
+        });
+        return;
+    }
+    const action = decision.value;
+    let message = '';
+    if (action === 'accept') {
+        message = 'هل أنت متأكد من قبول الطلب ونقله إلى المرحلة التالية؟';
+    } else if (action === 'reject') {
+        message = 'هل أنت متأكد من رفض الطلب نهائياً؟';
+    } else {
+        message = 'هل أنت متأكد من إعادة الطلب إلى اللجنة للمراجعة؟';
+    }
+    e.preventDefault();
+    Swal.fire({
+        title: 'تأكيد القرار',
+        text: message,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'نعم، تأكيد',
+        cancelButtonText: 'إلغاء'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            this.submit();
+        }
+    });
+});
+</script>
+{% endblock %}

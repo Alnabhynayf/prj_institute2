@@ -1,0 +1,75 @@
+{% extends 'dean/base_admin.html' %}
+{% load static %}
+
+{% block title %} تعديل بيانات الموظف {% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 p-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- عنوان الصفحة -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6">
+            <h2 class="text-xl font-semibold text-gray-900 flex items-center">
+                <i data-lucide="user-cog" class="w-6 h-6 ml-2 text-yellow-600"></i>
+                تعديل بيانات الموظف: {{ employee.name }}
+            </h2>
+        </div>
+
+        <!-- عرض الأخطاء إن وجدت -->
+        {% if user_form.errors or employee_form.errors %}
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+            <strong>حدثت أخطاء أثناء حفظ البيانات:</strong>
+            <ul class="mt-2">
+                {% for field, errors in user_form.errors.items %}
+                <li>{{ field }}: {{ errors|join:", " }}</li>
+                {% endfor %}
+                {% for field, errors in employee_form.errors.items %}
+                <li>{{ field }}: {{ errors|join:", " }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- نموذج تعديل الموظف -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+            <form method="post">
+                {% csrf_token %}
+                <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- بيانات المستخدم -->
+                    <div class="col-span-1">
+                        <h5 class="text-sm font-medium text-gray-700 mb-3 pb-2 border-b border-gray-200">بيانات المستخدم</h5>
+                        {% for field in user_form %}
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ field.errors|join:", " }}</p>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- بيانات الموظف -->
+                    <div class="col-span-1">
+                        <h5 class="text-sm font-medium text-gray-700 mb-3 pb-2 border-b border-gray-200">بيانات الموظف</h5>
+                        {% for field in employee_form %}
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ field.errors|join:", " }}</p>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- أزرار الإجراء -->
+                <div class="p-6 border-t border-gray-200 flex justify-end space-x-3 rtl:space-x-reverse">
+                    <a href="{% url 'manage_accounts' %}" class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">إلغاء</a>
+                    <button type="submit" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors">حفظ التعديلات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

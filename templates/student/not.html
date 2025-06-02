@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الإشعارات</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .notification-item.unread {
+            background-color: #f8fafc;
+            border-right: 3px solid #3b82f6;
+        }
+        .notification-item:hover {
+            background-color: #f1f5f9;
+        }
+        .notification-time {
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="max-w-4xl mx-auto p-4 md:p-6">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-6">
+            <h1 class="text-2xl font-bold text-gray-800 flex items-center">
+                <i data-lucide="bell" class="w-6 h-6 ml-2 text-blue-600"></i>
+                الإشعارات
+            </h1>
+            <div class="flex items-center space-x-3 rtl:space-x-reverse">
+                <button class="px-3 py-1.5 text-sm bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors">
+                    تعيين الكل كمقروء
+                </button>
+                <button class="px-3 py-1.5 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors">
+                    حذف الكل
+                </button>
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="flex border-b border-gray-200 mb-6">
+            <button class="px-4 py-2 font-medium text-sm border-b-2 border-blue-500 text-blue-600">
+                الكل
+            </button>
+            <button class="px-4 py-2 font-medium text-sm text-gray-500 hover:text-gray-700">
+                غير المقروءة
+            </button>
+            <button class="px-4 py-2 font-medium text-sm text-gray-500 hover:text-gray-700">
+                النظام
+            </button>
+            <button class="px-4 py-2 font-medium text-sm text-gray-500 hover:text-gray-700">
+                الرسائل
+            </button>
+        </div>
+
+        <!-- Notifications List -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+            <!-- Notification Item 1 (Unread) -->
+            <div class="notification-item unread p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 bg-blue-100 p-2 rounded-full ml-3">
+                        <i data-lucide="alert-circle" class="w-5 h-5 text-blue-600"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm font-medium text-gray-900 truncate">طلب جديد يحتاج إلى مراجعة</p>
+                            <span class="notification-time text-gray-500">منذ 5 دقائق</span>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-1">قام الطالب أحمد محمد بتقديم طلب جديد للقبول في برنامج الماجستير.</p>
+                        <div class="mt-2 flex space-x-2 rtl:space-x-reverse">
+                            <button class="px-2.5 py-1 text-xs bg-blue-50 text-blue-600 rounded hover:bg-blue-100 transition-colors">
+                                عرض الطلب
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notification Item 2 -->
+            <div class="notification-item p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 bg-green-100 p-2 rounded-full ml-3">
+                        <i data-lucide="check-circle" class="w-5 h-5 text-green-600"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm font-medium text-gray-900 truncate">تمت الموافقة على طلبك</p>
+                            <span class="notification-time text-gray-500">منذ ساعتين</span>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-1">تمت الموافقة على طلب القبول الخاص بك في برنامج الدكتوراه.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notification Item 3 -->
+            <div class="notification-item p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 bg-yellow-100 p-2 rounded-full ml-3">
+                        <i data-lucide="clock" class="w-5 h-5 text-yellow-600"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm font-medium text-gray-900 truncate">تذكير: اجتماع اللجنة</p>
+                            <span class="notification-time text-gray-500">منذ يوم</span>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-1">اجتماع لجنة القبول يوم الخميس القادم الساعة 10 صباحاً.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notification Item 4 -->
+            <div class="notification-item p-4 hover:bg-gray-50 transition-colors cursor-pointer">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 bg-red-100 p-2 rounded-full ml-3">
+                        <i data-lucide="x-circle" class="w-5 h-5 text-red-600"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm font-medium text-gray-900 truncate">طلب مرفوض</p>
+                            <span class="notification-time text-gray-500">منذ 3 أيام</span>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-1">نأسف لإعلامك أن طلبك للقبول في برنامج الماجستير قد تم رفضه.</p>
+                        <div class="mt-2 flex space-x-2 rtl:space-x-reverse">
+                            <button class="px-2.5 py-1 text-xs bg-gray-100 text-gray-600 rounded hover:bg-gray-200 transition-colors">
+                                معرفة السبب
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="mt-6 flex items-center justify-between">
+            <button class="px-3 py-1.5 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors flex items-center">
+                <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+                السابق
+            </button>
+            <div class="flex space-x-1 rtl:space-x-reverse">
+                <button class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-600 text-white text-sm">1</button>
+                <button class="w-8 h-8 flex items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 text-sm">2</button>
+                <button class="w-8 h-8 flex items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 text-sm">3</button>
+            </div>
+            <button class="px-3 py-1.5 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors flex items-center">
+                التالي
+                <i data-lucide="chevron-left" class="w-4 h-4 mr-1"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        
+        // Mark as read on click
+        document.querySelectorAll('.notification-item').forEach(item => {
+            item.addEventListener('click', function() {
+                this.classList.remove('unread');
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+
+{% extends 'dean/base_admin.html' %}
+{% load static %}
+{% block title %} تقارير العميد {% endblock %}
+
+{% block content %}
+<main class="max-w-7xl mx-auto px-4 py-8">
+  <!-- العنوان الرئيسي مع تأثير مميز -->
+  <div class="mb-10 p-6 bg-gradient-to-r from-blue-800 to-blue-600 rounded-xl shadow-lg">
+    <h1 class="text-3xl font-bold text-white flex items-center justify-center">
+      <i data-lucide="bar-chart-3" class="w-9 h-9 ml-3 text-yellow-300"></i>
+      لوحة التقارير والإحصائيات
+    </h1>
+    <p class="text-blue-100 text-center mt-2">نظرة شاملة على أداء النظام والطلبات</p>
+  </div>
+
+  <!-- بطاقات الإحصائيات الرئيسية -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+    <!-- بطاقة إجمالي الطلبات -->
+    <div class="bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-md border border-gray-100 overflow-hidden transition-transform hover:scale-[1.02]">
+      <div class="p-6">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-gray-500 text-sm">إجمالي الطلبات</p>
+            <h3 class="text-3xl font-bold text-gray-800 mt-1">{{ total_applications }}</h3>
+          </div>
+          <div class="p-3 bg-yellow-50 rounded-lg">
+            <i data-lucide="file-text" class="w-6 h-6 text-yellow-600"></i>
+          </div>
+        </div>
+        <div class="mt-4 flex items-center text-sm text-gray-500">
+          <i data-lucide="trending-up" class="w-4 h-4 ml-1 text-green-500"></i>
+          <span>زيادة 12% عن الشهر الماضي</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- بطاقة الطلبات المقبولة -->
+    <div class="bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-md border border-gray-100 overflow-hidden transition-transform hover:scale-[1.02]">
+      <div class="p-6">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-gray-500 text-sm">طلبات مقبولة</p>
+            <h3 class="text-3xl font-bold text-gray-800 mt-1">{{ approved_count }}</h3>
+          </div>
+          <div class="p-3 bg-green-50 rounded-lg">
+            <i data-lucide="check-circle" class="w-6 h-6 text-green-600"></i>
+          </div>
+        </div>
+        <div class="mt-4">
+          <div class="h-2 bg-gray-200 rounded-full">
+            <div class="h-2 bg-green-500 rounded-full" style="width: {% widthratio approved_count total_applications 100 %}%"></div>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">{{ approved_percentage|floatformat:1 }}% من إجمالي الطلبات</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- بطاقة الطلبات المرفوضة -->
+    <div class="bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-md border border-gray-100 overflow-hidden transition-transform hover:scale-[1.02]">
+      <div class="p-6">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-gray-500 text-sm">طلبات مرفوضة</p>
+            <h3 class="text-3xl font-bold text-gray-800 mt-1">{{ rejected_count }}</h3>
+          </div>
+          <div class="p-3 bg-red-50 rounded-lg">
+            <i data-lucide="x-circle" class="w-6 h-6 text-red-600"></i>
+          </div>
+        </div>
+        <div class="mt-4">
+          <div class="h-2 bg-gray-200 rounded-full">
+            <div class="h-2 bg-red-500 rounded-full" style="width: {% widthratio rejected_count total_applications 100 %}%"></div>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">{{ rejected_percentage|floatformat:1 }}% من إجمالي الطلبات</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- بطاقة الطلبات قيد الإجراء -->
+    <div class="bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-md border border-gray-100 overflow-hidden transition-transform hover:scale-[1.02]">
+      <div class="p-6">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-gray-500 text-sm">طلبات قيد الإجراء</p>
+            <h3 class="text-3xl font-bold text-gray-800 mt-1">{{ pending_count }}</h3>
+          </div>
+          <div class="p-3 bg-blue-50 rounded-lg">
+            <i data-lucide="clock" class="w-6 h-6 text-blue-600"></i>
+          </div>
+        </div>
+        <div class="mt-4">
+          <div class="h-2 bg-gray-200 rounded-full">
+            <div class="h-2 bg-blue-500 rounded-full" style="width: {% widthratio pending_count total_applications 100 %}%"></div>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">{{ pending_percentage|floatformat:1 }}% من إجمالي الطلبات</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- صف من عناصر التحليل المرئي -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <!-- رسم بياني للطلبات حسب القسم -->
+    <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-semibold flex items-center">
+          <i data-lucide="pie-chart" class="w-5 h-5 ml-2 text-purple-600"></i>
+          توزيع الطلبات حسب القسم
+        </h2>
+        <div class="relative">
+          <select class="appearance-none bg-gray-50 border border-gray-300 text-gray-700 py-1 px-3 pr-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+            <option>هذا الشهر</option>
+            <option>هذا العام</option>
+            <option>كل الوقت</option>
+          </select>
+          <i data-lucide="chevron-down" class="w-4 h-4 absolute right-3 top-2 text-gray-500"></i>
+        </div>
+      </div>
+      <div class="h-64 flex items-center justify-center">
+        <!-- هنا سيتم وضع الرسم البياني باستخدام Chart.js -->
+        <canvas id="deptChart"></canvas>
+      </div>
+    </div>
+
+    <!-- رسم بياني للتقدم الزمني -->
+    <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-semibold flex items-center">
+          <i data-lucide="activity" class="w-5 h-5 ml-2 text-blue-600"></i>
+          التقدم الزمني للطلبات
+        </h2>
+        <div class="flex space-x-2 rtl:space-x-reverse">
+          <button class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm">شهري</button>
+          <button class="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-sm">سنوي</button>
+        </div>
+      </div>
+      <div class="h-64">
+        <!-- هنا سيتم وضع الرسم البياني الزمني -->
+        <canvas id="timelineChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- جدول تفصيلي للطلبات حسب القسم -->
+  <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+    <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+      <h2 class="text-lg font-semibold flex items-center">
+        <i data-lucide="layers" class="w-5 h-5 ml-2 text-indigo-600"></i>
+        الطلبات حسب القسم
+      </h2>
+      <button class="text-sm text-blue-600 hover:text-blue-800 flex items-center">
+        <i data-lucide="download" class="w-4 h-4 ml-1"></i>
+        تصدير البيانات
+      </button>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">القسم</th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">إجمالي الطلبات</th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">مقبولة</th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">مرفوضة</th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">قيد الإجراء</th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">النسبة</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          {% for dept in detailed_dept_stats %}
+          <tr class="hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{{ dept.name }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ dept.total }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-green-600">{{ dept.approved }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-red-600">{{ dept.rejected }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-blue-600">{{ dept.pending }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <div class="w-16 bg-gray-200 rounded-full h-2">
+                  <div class="bg-blue-600 h-2 rounded-full" style="width: {{ dept.percentage }}%"></div>
+                </div>
+                <span class="text-xs text-gray-500 mr-2">{{ dept.percentage }}%</span>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="px-6 py-4 text-center text-gray-500">لا توجد بيانات متاحة</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- أداء أعضاء اللجنة -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+    <!-- أعضاء اللجنة الأكثر نشاطًا -->
+    <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+      <h2 class="text-lg font-semibold mb-4 flex items-center">
+        <i data-lucide="award" class="w-5 h-5 ml-2 text-yellow-600"></i>
+        أعضاء اللجنة الأكثر نشاطًا
+      </h2>
+      <div class="space-y-4">
+        {% for member in top_committee_members %}
+        <div class="flex items-center">
+          <div class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+            <span class="text-blue-800 font-medium">{{ forloop.counter }}</span>
+          </div>
+          <div class="mr-4">
+            <h4 class="font-medium text-gray-900">{{ member.user__first_name }} {{ member.user__last_name }}</h4>
+            <p class="text-sm text-gray-500">{{ member.reviewed }} طلب مراجع</p>
+          </div>
+          <div class="mr-auto text-right">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+              <i data-lucide="trending-up" class="w-3 h-3 ml-1"></i>
+              {{ member.efficiency }}%
+            </span>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- متوسط وقت المعالجة -->
+    <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+      <h2 class="text-lg font-semibold mb-4 flex items-center">
+        <i data-lucide="clock" class="w-5 h-5 ml-2 text-purple-600"></i>
+        مؤشرات الأداء
+      </h2>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <div class="text-2xl font-bold text-blue-600">{{ avg_processing_time }}</div>
+          <div class="text-sm text-gray-500">متوسط وقت المعالجة (أيام)</div>
+        </div>
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <div class="text-2xl font-bold text-green-600">{{ completion_rate }}%</div>
+          <div class="text-sm text-gray-500">معدل إكمال الطلبات</div>
+        </div>
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <div class="text-2xl font-bold text-red-600">{{ rejection_rate }}%</div>
+          <div class="text-sm text-gray-500">معدل الرفض</div>
+        </div>
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <div class="text-2xl font-bold text-yellow-600">{{ avg_review_per_member }}</div>
+          <div class="text-sm text-gray-500">متوسط المراجعات لكل عضو</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- توزيع الطلبات حسب المرحلة -->
+    <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+      <h2 class="text-lg font-semibold mb-4 flex items-center">
+        <i data-lucide="flag" class="w-5 h-5 ml-2 text-green-600"></i>
+        الطلبات حسب المرحلة
+      </h2>
+      <div class="h-48">
+        <canvas id="stageChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- أحدث الطلبات مع تفاصيل موسعة -->
+  <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+    <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+      <h2 class="text-lg font-semibold flex items-center">
+        <i data-lucide="list" class="w-5 h-5 ml-2 text-blue-600"></i>
+        أحدث الطلبات
+      </h2>
+      <a href="{% url 'applications_list' %}" class="text-sm text-blue-600 hover:text-blue-800 flex items-center">
+        عرض الكل
+        <i data-lucide="chevron-left" class="w-4 h-4 ml-1"></i>
+      </a>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">رقم الطلب</th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الطالب</th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">القسم</th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">تاريخ التقديم</th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الحالة</th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الإجراءات</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          {% for app in latest_apps %}
+          <tr class="hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4 whitespace-nowrap font-medium text-blue-600">#{{ app.id }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                  <i data-lucide="user" class="w-5 h-5 text-gray-600"></i>
+                </div>
+                <div class="mr-3">
+                  <div class="font-medium text-gray-900">{{ app.student.full_name }}</div>
+                  <div class="text-sm text-gray-500">{{ app.student.university_id }}</div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                {{ app.department.name }}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              {{ app.application_date|date:"Y-m-d" }}
+              <div class="text-xs text-gray-400">{{ app.application_date|timesince }}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              {% if app.status == 'approved' %}
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                  <i data-lucide="check-circle" class="w-3 h-3 ml-1"></i>
+                  مقبول
+                </span>
+              {% elif app.status == 'rejected' %}
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                  <i data-lucide="x-circle" class="w-3 h-3 ml-1"></i>
+                  مرفوض
+                </span>
+              {% else %}
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                  <i data-lucide="clock" class="w-3 h-3 ml-1"></i>
+                  قيد الإجراء
+                </span>
+              {% endif %}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <a href="#" class="text-blue-600 hover:text-blue-900">عرض</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="px-6 py-4 text-center text-gray-500">لا توجد طلبات حديثة</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- أزرار تصدير البيانات -->
+  <div class="flex flex-wrap gap-4 mb-6">
+    <a href="{% url 'dean_export_excel' %}" class="px-5 py-3 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-lg shadow-md hover:shadow-lg transition-all flex items-center">
+      <i data-lucide="file-spreadsheet" class="w-5 h-5 ml-2"></i>
+      تصدير Excel
+    </a>
+    <a href="{% url 'dean_export_pdf' %}" class="px-5 py-3 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg shadow-md hover:shadow-lg transition-all flex items-center">
+      <i data-lucide="file-text" class="w-5 h-5 ml-2"></i>
+      تصدير PDF
+    </a>
+    <a href="#" class="px-5 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg shadow-md hover:shadow-lg transition-all flex items-center">
+      <i data-lucide="printer" class="w-5 h-5 ml-2"></i>
+      طباعة التقرير
+    </a>
+  </div>
+</main>
+
+<!-- إضافة مكتبة Chart.js للرسوم البيانية -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // تهيئة الأيقونات
+  lucide.createIcons();
+
+  // رسم بياني للطلبات حسب القسم
+  const deptCtx = document.getElementById('deptChart').getContext('2d');
+  const deptChart = new Chart(deptCtx, {
+    type: 'doughnut',
+    data: {
+      labels: [{% for dept in dept_stats %}'{{ dept.department__name }}',{% endfor %}],
+      datasets: [{
+        data: [{% for dept in dept_stats %}{{ dept.total }},{% endfor %}],
+        backgroundColor: [
+          '#3B82F6', '#10B981', '#F59E0B', '#6366F1', '#EC4899', '#14B8A6', '#F97316', '#8B5CF6'
+        ],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'left',
+          rtl: true,
+          labels: {
+            usePointStyle: true,
+            padding: 20
+          }
+        }
+      }
+    }
+  });
+
+  // رسم بياني زمني للطلبات
+  const timelineCtx = document.getElementById('timelineChart').getContext('2d');
+  const timelineChart = new Chart(timelineCtx, {
+    type: 'line',
+    data: {
+      labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
+      datasets: [
+        {
+          label: 'طلبات مقبولة',
+          data: [12, 19, 15, 22, 18, 25],
+          borderColor: '#10B981',
+          backgroundColor: 'rgba(16, 185, 129, 0.1)',
+          tension: 0.3,
+          fill: true
+        },
+        {
+          label: 'طلبات مرفوضة',
+          data: [5, 8, 6, 9, 7, 10],
+          borderColor: '#EF4444',
+          backgroundColor: 'rgba(239, 68, 68, 0.1)',
+          tension: 0.3,
+          fill: true
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'top',
+          rtl: true
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+  // رسم بياني للمراحل
+  const stageCtx = document.getElementById('stageChart').getContext('2d');
+  const stageChart = new Chart(stageCtx, {
+    type: 'bar',
+    data: {
+      labels: [{% for stage in stage_stats %}'{{ stage.stage__name }}',{% endfor %}],
+      datasets: [{
+        label: 'عدد الطلبات',
+        data: [{% for stage in stage_stats %}{{ stage.total }},{% endfor %}],
+        backgroundColor: '#3B82F6',
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}

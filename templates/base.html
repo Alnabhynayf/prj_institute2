@@ -1,0 +1,420 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>المعهد العالي للقضاء اليمني</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN معدل -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Custom theme colors */
+    :root {
+      --navy-900: #243b53;
+      --gold-500: #f59e0b;
+      --navy-800: #243b53;
+      --navy-700: #244c78;
+    }
+    
+    /* تحسين الخطوط العربية */
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+
+    * {
+  font-family: 'Cairo', sans-serif;
+}
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      direction: rtl;
+      text-align: right;
+    }
+    
+    /* تحسين تأثيرات الحركة */
+    .transition-all {
+      transition: all 0.3s ease;
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-800 relative">
+  <!-- Header -->
+  <header class="fixed w-full top-0 z-50 transition-all duration-300 bg-transparent py-6" id="header">
+    <div class="container mx-auto px-4 flex justify-between items-center">
+      <div class="flex items-center space-x-2 rtl:space-x-reverse">
+        <div class="flex items-center">
+          <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+            <i data-lucide="scale" class="w-6 h-6 text-[var(--navy-900)]"></i>
+          </div>
+          <h1 class="text-xl font-bold text-[var(--gold-500)] mr-2">المعهد العالي للقضاء اليمني</h1>
+        </div>
+      </div>
+      <nav class="hidden md:flex items-center space-x-6 rtl:space-x-reverse">
+        <ul class="flex space-x-6 rtl:space-x-reverse text-white">
+          <li><a href="#hero" class="hover:text-[var(--gold-500)] transition-colors">الرئيسية</a></li>
+          <li><a href="#about" class="hover:text-[var(--gold-500)] transition-colors">عن المعهد</a></li>
+          <li><a href="#departments" class="hover:text-[var(--gold-500)] transition-colors">الأقسام</a></li>
+          <li><a href="#announcements" class="hover:text-[var(--gold-500)] transition-colors">الإعلانات</a></li>
+        </ul>
+        <a href="/login/" class="bg-[var(--gold-500)] text-[var(--navy-900)] px-4 py-2 rounded-md flex items-center hover:bg-yellow-600 transition-colors">
+          <i data-lucide="user-circle" class="w-4 h-4 ml-2"></i> تسجيل الدخول
+        </a>
+      </nav>
+      <button class="md:hidden text-white p-2" id="menu-toggle">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </div>
+    <!-- Mobile Menu -->
+    <div class="md:hidden bg-[var(--navy-900)] text-white hidden" id="mobile-menu">
+      <ul class="flex flex-col p-4 space-y-4 text-right">
+        <li><a href="#hero" class="block hover:text-[var(--gold-500)]">الرئيسية</a></li>
+        <li><a href="#about" class="block hover:text-[var(--gold-500)]">عن المعهد</a></li>
+        <li><a href="#departments" class="block hover:text-[var(--gold-500)]">الأقسام</a></li>
+        <li><a href="#announcements" class="block hover:text-[var(--gold-500)]">الإعلانات</a></li>
+        <li><a href="/login" class="block bg-[var(--gold-500)] text-[var(--navy-900)] px-4 py-2 rounded-md">تسجيل الدخول</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="pt-24">
+    <!-- Hero Section -->
+    <section id="hero" class="relative h-screen overflow-hidden">
+      <div class="absolute inset-0 bg-[var(--navy-900)] opacity-90 z-0"></div>
+      <!-- Slides -->
+      <div class="absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="background-image: url('https://images.pexels.com/photos/5668859/pexels-photo-5668859.jpeg'); opacity: 100%;" id="slide-0"></div>
+      <div class="absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="background-image: url('https://images.pexels.com/photos/5668772/pexels-photo-5668772.jpeg'); opacity: 0;" id="slide-1"></div>
+      <div class="absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="background-image: url('https://images.pexels.com/photos/5668481/pexels-photo-5668481.jpeg'); opacity: 0;" id="slide-2"></div>
+      <div class="absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="background-image: url('https://images.pexels.com/photos/5668858/pexels-photo-5668858.jpeg'); opacity: 0;" id="slide-3"></div>
+      <!-- طبقة ذهبية شفافة -->
+      <div class="absolute inset-0 bg-[#010d18] opacity-30 z-10 pointer-events-none"></div>
+      <!-- Indicators -->
+      <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+        <button data-index="0" class="w-3 h-3 rounded-full bg-[var(--gold-500)]"></button>
+        <button data-index="1" class="w-2 h-2 rounded-full bg-white"></button>
+        <button data-index="2" class="w-2 h-2 rounded-full bg-white"></button>
+        <button data-index="3" class="w-2 h-2 rounded-full bg-white"></button>
+      </div>
+      <!-- Content -->
+      <div class="relative z-30 container mx-auto px-4 text-right flex flex-col md:flex-row-reverse items-center h-full">
+        <div class="md:w-1/2 mb-8">
+          <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">المعهد العالي للقضاء اليمني</h1>
+          <p class="text-xl text-gray-200 mb-8">نحو نظام قضائي عادل ومتطور من خلال تأهيل وتدريب الكوادر القضائية المتميزة</p>
+          <div class="flex flex-wrap justify-end gap-4">
+            <a href="#about" class="bg-[var(--gold-500)] hover:bg-yellow-600 text-[var(--navy-900)] font-bold py-3 px-6 rounded-md transition-transform transform hover:scale-105">تعرف علينا</a>
+            <a href="#departments" class="border-2 border-[var(--gold-500)] text-[var(--gold-500)] hover:bg-[var(--gold-500)] hover:text-[var(--navy-900)] font-bold py-3 px-6 rounded-md transition-transform transform hover:scale-105">أقسام المعهد</a>
+          </div>
+        </div>
+        <div class="md:w-1/2 flex justify-center">
+          <div class="relative w-72 h-72">
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="w-40 h-40 bg-[var(--navy-800)] bg-opacity-80 rounded-full border-4 border-[var(--gold-500)] flex items-center justify-center">
+                <i data-lucide="scale" class="w-20 h-20 text-[var(--gold-500)]"></i>
+              </div>
+            </div>
+            <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/4">
+              <div class="w-20 h-20 bg-[var(--navy-700)] bg-opacity-80 rounded-full border-2 border-yellow-400 flex items-center justify-center">
+                <i data-lucide="book-text" class="w-10 h-10 text-yellow-400"></i>
+              </div>
+            </div>
+            <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/4">
+              <div class="w-20 h-20 bg-[var(--navy-700)] bg-opacity-80 rounded-full border-2 border-yellow-400 flex items-center justify-center">
+                <i data-lucide="award" class="w-10 h-10 text-yellow-400"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Wave Divider -->
+      <div class="absolute bottom-0 left-0 right-0 overflow-hidden leading-none rotate-180">
+        <svg class="relative block w-full h-20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" viewBox="0 0 1200 120"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="#ffffff"></path></svg>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-16 bg-white text-gray-800">
+      <div class="container mx-auto px-4 text-center mb-12">
+        <h2 class="text-3xl font-bold text-[var(--navy-900)] mb-2">عن المعهد العالي للقضاء</h2>
+        <div class="w-24 h-1 bg-[var(--gold-500)] mx-auto mb-6"></div>
+        <p class="text-gray-600 max-w-3xl mx-auto">المعهد العالي للقضاء اليمني هو مؤسسة تعليمية وتدريبية رائدة، تأسست لتأهيل وتدريب الكوادر القضائية وتطوير قدراتهم المهنية والعلمية.</p>
+      </div>
+      <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-right">
+        <!-- Card 1 -->
+        <div class="bg-gray-50 p-6 rounded-lg shadow-sm hover:shadow-md border-t-4 border-[var(--gold-500)] transition-shadow">
+          <div class="flex justify-end mb-4"><div class="p-3 bg-[var(--gold-500)] rounded-full"><i data-lucide="book-text" class="w-6 h-6 text-[var(--navy-900)]"></i></div></div>
+          <h3 class="text-xl font-semibold text-[var(--navy-900)] mb-2">رؤيتنا</h3>
+          <p class="text-gray-600">نسعى أن يكون المعهد العالي للقضاء صرحاً علمياً وقانونياً رائداً، يساهم في بناء نظام قضائي عادل ونزيه.</p>
+        </div>
+        <!-- Card 2 -->
+        <div class="bg-gray-50 p-6 rounded-lg shadow-sm hover:shadow-md border-t-4 border-[var(--gold-500)] transition-shadow">
+          <div class="flex justify-end mb-4"><div class="p-3 bg-[var(--gold-500)] rounded-full"><i data-lucide="users" class="w-6 h-6 text-[var(--navy-900)]"></i></div></div>
+          <h3 class="text-xl font-semibold text-[var(--navy-900)] mb-2">رسالتنا</h3>
+          <p class="text-gray-600">تأهيل وتدريب القضاة وأعضاء النيابة العامة والمحامين، وتطوير قدراتهم العلمية والعملية لتحقيق العدالة.</p>
+        </div>
+        <!-- Card 3 -->
+        <div class="bg-gray-50 p-6 rounded-lg shadow-sm hover:shadow-md border-t-4 border-[var(--gold-500)] transition-shadow">
+          <div class="flex justify-end mb-4"><div class="p-3 bg-[var(--gold-500)] rounded-full"><i data-lucide="award" class="w-6 h-6 text-[var(--navy-900)]"></i></div></div>
+          <h3 class="text-xl font-semibold text-[var(--navy-900)] mb-2">قيمنا</h3>
+          <p class="text-gray-600">العدالة، النزاهة، الشفافية، الاستقلالية، الالتزام بالمعايير العلمية، والتطوير المستمر.</p>
+        </div>
+        <!-- Card 4 -->
+        <div class="bg-gray-50 p-6 rounded-lg shadow-sm hover:shadow-md border-t-4 border-[var(--gold-500)] transition-shadow">
+          <div class="flex justify-end mb-4"><div class="p-3 bg-[var(--gold-500)] rounded-full"><i data-lucide="history" class="w-6 h-6 text-[var(--navy-900)]"></i></div></div>
+          <h3 class="text-xl font-semibold text-[var(--navy-900)] mb-2">تاريخنا</h3>
+          <p class="text-gray-600">تأسس المعهد العالي للقضاء عام 1992م، وقد تخرج منه المئات من الكوادر القضائية المؤهلة.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Departments Section -->
+    <section id="departments" class="py-16 bg-gray-50 text-gray-800">
+      <div class="container mx-auto px-4 text-center mb-12">
+        <h2 class="text-3xl font-bold text-[var(--navy-900)] mb-2">أقسام المعهد</h2>
+        <div class="w-24 h-1 bg-[var(--gold-500)] mx-auto mb-6"></div>
+        <p class="text-gray-600 max-w-3xl mx-auto">
+          يضم المعهد أقساماً متخصصة تلبي احتياجات القطاع القضائي والقانوني من خلال برامج تعليمية وتدريبية متميزة.
+        </p>
+      </div>
+      <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- قسم القانون العام -->
+        <div class="bg-white rounded-lg shadow-md hover:shadow-lg overflow-hidden group">
+          <div class="h-20 bg-[var(--navy-800)] flex items-center justify-center group-hover:bg-[var(--navy-900)] transition-colors relative">
+            <div class="w-16 h-16 bg-white rounded-full border-4 border-[var(--navy-800)] group-hover:border-[var(--navy-900)] transition-colors flex items-center justify-center -mb-8 relative">
+              <i data-lucide="scale" class="w-10 h-10 text-[var(--gold-500)]"></i>
+            </div>
+          </div>
+          <div class="px-6 pt-12 pb-6 text-right">
+            <h3 class="text-xl font-bold text-[var(--navy-900)] mb-3">القانون العام</h3>
+            <p class="text-gray-600 mb-4">برنامج لتعميق المعرفة بالقانون المدني والجنائي.</p>
+            <a href="#" class="inline-flex items-center text-[var(--gold-500)] hover:text-yellow-600 font-medium">
+              <span>المزيد من التفاصيل</span>
+              <i data-lucide="arrow-left" class="w-5 h-5 mr-1"></i>
+            </a>
+          </div>
+        </div>
+        <!-- قسم القضاء الشرعي -->
+        <div class="bg-white rounded-lg shadow-md hover:shadow-lg overflow-hidden group">
+          <div class="h-20 bg-[var(--navy-800)] flex items-center justify-center group-hover:bg-[var(--navy-900)] transition-colors relative">
+            <div class="w-16 h-16 bg-white rounded-full border-4 border-[var(--navy-800)] group-hover:border-[var(--navy-900)] transition-colors flex items-center justify-center -mb-8 relative">
+              <i data-lucide="book-text" class="w-10 h-10 text-[var(--gold-500)]"></i>
+            </div>
+          </div>
+          <div class="px-6 pt-12 pb-6 text-right">
+            <h3 class="text-xl font-bold text-[var(--navy-900)] mb-3">القضاء الشرعي</h3>
+            <p class="text-gray-600 mb-4">برنامج متخصص في القضاء الشرعي وأحكامه.</p>
+            <a href="#" class="inline-flex items-center text-[var(--gold-500)] hover:text-yellow-600 font-medium">
+              <span>المزيد من التفاصيل</span>
+              <i data-lucide="arrow-left" class="w-5 h-5 mr-1"></i>
+            </a>
+          </div>
+        </div>
+        <!-- قسم القضاء الإداري -->
+        <div class="bg-white rounded-lg shadow-md hover:shadow-lg overflow-hidden group">
+          <div class="h-20 bg-[var(--navy-800)] flex items-center justify-center group-hover:bg-[var(--navy-900)] transition-colors relative">
+            <div class="w-16 h-16 bg-white rounded-full border-4 border-[var(--navy-800)] group-hover:border-[var(--navy-900)] transition-colors flex items-center justify-center -mb-8 relative">
+              <i data-lucide="award" class="w-10 h-10 text-[var(--gold-500)]"></i>
+            </div>
+          </div>
+          <div class="px-6 pt-12 pb-6 text-right">
+            <h3 class="text-xl font-bold text-[var(--navy-900)] mb-3">القضاء الإداري</h3>
+            <p class="text-gray-600 mb-4">برنامج لتأهيل القضاة في القضاء الإداري.</p>
+            <a href="#" class="inline-flex items-center text-[var(--gold-500)] hover:text-yellow-600 font-medium">
+              <span>المزيد من التفاصيل</span>
+              <i data-lucide="arrow-left" class="w-5 h-5 mr-1"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section id="statistics" class="py-16 bg-[var(--navy-900)] text-white">
+      <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+        <div class="p-6">
+          <div class="flex justify-center mb-4"><i data-lucide="users" class="w-8 h-8 p-2 bg-[var(--navy-700)] rounded-full border-2 border-[var(--gold-500)]"></i></div>
+          <div class="text-4xl font-bold text-[var(--gold-500)] mb-2">+1200</div>
+          <h3 class="text-xl">خريج</h3>
+        </div>
+        <div class="p-6">
+          <div class="flex justify-center mb-4"><i data-lucide="book-text" class="w-8 h-8 p-2 bg-[var(--navy-700)] rounded-full border-2 border-[var(--gold-500)]"></i></div>
+          <div class="text-4xl font-bold text-[var(--gold-500)] mb-2">+120</div>
+          <h3 class="text-xl">أستاذ وخبير</h3>
+        </div>
+        <div class="p-6">
+          <div class="flex justify-center mb-4"><i data-lucide="award" class="w-8 h-8 p-2 bg-[var(--navy-700)] rounded-full border-2 border-[var(--gold-500)]"></i></div>
+          <div class="text-4xl font-bold text-[var(--gold-500)] mb-2">+50</div>
+          <h3 class="text-xl">برنامج تدريبي</h3>
+        </div>
+        <div class="p-6">
+          <div class="flex justify-center mb-4"><i data-lucide="clock" class="w-8 h-8 p-2 bg-[var(--navy-700)] rounded-full border-2 border-[var(--gold-500)]"></i></div>
+          <div class="text-4xl font-bold text-[var(--gold-500)] mb-2">+30</div>
+          <h3 class="text-xl">عاماً من الخبرة</h3>
+        </div>
+      </div>
+    </section>
+
+    <!-- Announcements Section -->
+    <section id="announcements" class="py-16 bg-white text-gray-800">
+      <div class="container mx-auto px-4 text-center mb-12">
+        <h2 class="text-3xl font-bold text-[var(--navy-900)] mb-2">أحدث الإعلانات</h2>
+        <div class="w-24 h-1 bg-[var(--gold-500)] mx-auto mb-6"></div>
+        <p class="text-gray-600 max-w-3xl mx-auto">تابع أحدث الإعلانات والأخبار الخاصة بالمعهد.</p>
+      </div>
+      <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% if public_announcements %}
+          {% for announcement in public_announcements %}
+            <div class="bg-gray-50 rounded-lg shadow-sm hover:shadow-md border-r-4 rtl:border-r-0 rtl:border-l-4 border-[var(--gold-500)] overflow-hidden transition-shadow text-right p-6">
+              <div class="flex items-center justify-end mb-3">
+                <i data-lucide="bell" class="w-5 h-5 text-[var(--gold-500)] ml-2"></i>
+                <h3 class="text-lg font-bold text-[var(--navy-900)]">{{ announcement.title }}</h3>
+              </div>
+              <div class="flex items-center justify-end text-gray-500 text-sm mb-3">
+                <i data-lucide="calendar" class="w-4 h-4 ml-1"></i>
+                <span>{{ announcement.created_at|date:"Y-m-d" }}</span>
+              </div>
+              <p class="text-gray-600 mb-4">{{ announcement.content }}</p>
+              {% if announcement.attachment %}
+                <a href="{{ announcement.attachment.url }}" class="inline-flex items-center text-[var(--gold-500)] hover:text-yellow-600 font-medium" target="_blank">
+                  <span>تحميل المرفق</span>
+                  <i data-lucide="download" class="w-4 h-4 mr-1"></i>
+                </a>
+              {% endif %}
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="col-span-2 text-center text-gray-400">لا توجد إعلانات حالياً.</div>
+        {% endif %}
+      </div>
+      <div class="text-center mt-10">
+        <a href="/announcements" class="inline-block bg-[var(--navy-800)] text-white px-6 py-3 rounded-md hover:bg-[var(--navy-900)] transition-colors">جميع الإعلانات</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer id="footer" class="bg-[var(--navy-900)] text-gray-300 pt-16 pb-6 text-right">
+    <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+      <!-- About -->
+      <div>
+        <h3 class="text-xl font-bold text-white mb-4">المعهد العالي للقضاء</h3>
+        <p class="mb-4 text-gray-400">مؤسسة تعليمية وتدريبية رائدة تهدف إلى تأهيل وتطوير الكوادر القضائية في اليمن.</p>
+        <div class="flex space-x-4 rtl:space-x-reverse justify-end">
+          <a href="#" class="text-gray-400 hover:text-[var(--gold-500)]"><i data-lucide="facebook" class="w-5 h-5"></i></a>
+          <a href="#" class="text-gray-400 hover:text-[var(--gold-500)]"><i data-lucide="twitter" class="w-5 h-5"></i></a>
+          <a href="#" class="text-gray-400 hover:text-[var(--gold-500)]"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+          <a href="#" class="text-gray-400 hover:text-[var(--gold-500)]"><i data-lucide="youtube" class="w-5 h-5"></i></a>
+        </div>
+      </div>
+      <!-- Quick Links -->
+      <div>
+        <h3 class="text-xl font-bold text-white mb-4">روابط سريعة</h3>
+        <ul class="space-y-2">
+          <li><a href="#hero" class="text-gray-400 hover:text-[var(--gold-500)]">الرئيسية</a></li>
+          <li><a href="#about" class="text-gray-400 hover:text-[var(--gold-500)]">عن المعهد</a></li>
+          <li><a href="#departments" class="text-gray-400 hover:text-[var(--gold-500)]">الأقسام</a></li>
+          <li><a href="#announcements" class="text-gray-400 hover:text-[var(--gold-500)]">الإعلانات</a></li>
+          <li><a href="#contact" class="text-gray-400 hover:text-[var(--gold-500)]">اتصل بنا</a></li>
+        </ul>
+      </div>
+      <!-- Contact -->
+      <div>
+        <h3 class="text-xl font-bold text-white mb-4">اتصل بنا</h3>
+        <ul class="space-y-3">
+          <li class="flex items-center justify-end"><i data-lucide="map-pin" class="w-5 h-5 text-[var(--gold-500)] ml-2"></i><span>صنعاء، اليمن</span></li>
+          <li class="flex items-center justify-end"><i data-lucide="mail" class="w-5 h-5 text-[var(--gold-500)] ml-2"></i><span>info@yemenjudicialinstitute.edu.ye</span></li>
+          <li class="flex items-center justify-end"><i data-lucide="phone" class="w-5 h-5 text-[var(--gold-500)] ml-2"></i><span>+967 1 234567</span></li>
+        </ul>
+      </div>
+      <!-- Newsletter -->
+      <div>
+        <h3 class="text-xl font-bold text-white mb-4">النشرة الإخبارية</h3>
+        <p class="mb-4 text-gray-400">اشترك في نشرتنا للحصول على آخر المستجدات.</p>
+        <form class="space-y-3">
+          <input type="email" placeholder="البريد الإلكتروني" class="w-full px-4 py-2 rounded bg-[var(--navy-700)] border border-[var(--navy-600)] text-white focus:border-[var(--gold-500)] focus:outline-none" />
+          <button type="submit" class="w-full bg-[var(--gold-500)] text-[var(--navy-900)] py-2 rounded font-medium hover:bg-yellow-600 transition-colors">اشتراك</button>
+        </form>
+      </div>
+    </div>
+    <div class="border-t border-[var(--navy-800)] pt-6 text-center text-gray-400">
+      <p>© 2025 المعهد العالي للقضاء اليمني. جميع الحقوق محفوظة.</p>
+    </div>
+  </footer>
+
+  <!-- Back to Top Button -->
+  <button id="backToTop" class="fixed bottom-6 right-6 bg-[var(--gold-500)] text-[var(--navy-900)] w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-yellow-600 transition-colors z-50" aria-label="Back to top">
+    <i data-lucide="arrow-up" class="w-6 h-6"></i>
+  </button>
+
+  <!-- JavaScript -->
+  <script>
+    // تهيئة أيقونات Lucide
+    lucide.createIcons();
+    
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    menuToggle.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+      const icon = menuToggle.querySelector('i');
+      if (mobileMenu.classList.contains('hidden')) {
+        icon.setAttribute('data-lucide', 'menu');
+      } else {
+        icon.setAttribute('data-lucide', 'x');
+      }
+      lucide.createIcons();
+    });
+
+    // Hero slider
+    let currentSlide = 0;
+    const totalSlides = 4;
+    const changeSlide = (index) => {
+      document.querySelectorAll('[id^="slide-"]').forEach((el, idx) => {
+        el.style.opacity = idx === index ? '100%' : '0';
+      });
+      document.querySelectorAll('[data-index]').forEach((btn, idx) => {
+        if (idx === index) {
+          btn.classList.remove('bg-white', 'w-2');
+          btn.classList.add('bg-[var(--gold-500)]', 'w-3');
+        } else {
+          btn.classList.remove('bg-[var(--gold-500)]', 'w-3');
+          btn.classList.add('bg-white', 'w-2');
+        }
+      });
+    };
+    document.querySelectorAll('[data-index]').forEach(btn => {
+      btn.addEventListener('click', () => { 
+        currentSlide = parseInt(btn.dataset.index); 
+        changeSlide(currentSlide); 
+      });
+    });
+    setInterval(() => { 
+      currentSlide = (currentSlide + 1) % totalSlides; 
+      changeSlide(currentSlide); 
+    }, 5000);
+
+    // Back to top button
+    const backToTop = document.getElementById('backToTop');
+    backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    // Header scroll effect
+    window.addEventListener('scroll', () => {
+      const header = document.getElementById('header');
+      if (window.scrollY > 10) {
+        header.classList.add('bg-[var(--navy-900)]', 'shadow-md', 'py-2');
+        header.classList.remove('bg-transparent', 'py-6');
+      } else {
+        header.classList.remove('bg-[var(--navy-900)]', 'shadow-md', 'py-2');
+        header.classList.add('bg-transparent', 'py-6');
+      }
+    });
+
+    // إعادة تحميل الأيقونات عند تغيير الصفحة
+    document.addEventListener('turbolinks:load', function() {
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
+
+

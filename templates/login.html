@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل الدخول - المعهد العالي للقضاء</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://unpkg.com/lucide@latest/icons.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+    }
+    .login-card {
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.85);
+    }
+    .form-input {
+      transition: all 0.3s ease;
+    }
+    .form-input:focus {
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+  <div class="login-card rounded-2xl shadow-2xl border border-gray-100 w-full max-w-md overflow-hidden relative">
+    <!-- Decorative Elements -->
+    <div class="absolute -top-20 -right-20 w-40 h-40 bg-yellow-100 rounded-full opacity-20"></div>
+    <div class="absolute -bottom-20 -left-20 w-40 h-40 bg-yellow-100 rounded-full opacity-20"></div>
+    
+    <div class="p-8 relative">
+      <!-- Logo Header -->
+      <div class="text-center mb-8">
+        <div class="mx-auto w-16 h-16 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-full flex items-center justify-center shadow-sm mb-4">
+          <i data-lucide="scale" class="w-8 h-8 text-yellow-600"></i>
+        </div>
+        <h1 class="text-2xl font-bold text-gray-800">المعهد العالي للقضاء</h1>
+        <p class="text-yellow-600 mt-1">  تسجيل الدخول</p>
+      </div>
+
+      <!-- Login Form -->
+      <form method="post" class="space-y-5">
+        {% csrf_token %}
+        
+        <!-- Username Field -->
+        <div>
+          <label for="username" class="block text-sm font-medium text-gray-700 mb-1">اسم المستخدم</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+              <i data-lucide="user" class="w-5 h-5 text-gray-400"></i>
+            </div>
+            <input 
+              type="text" 
+              id="username" 
+              name="username" 
+              required
+              class="form-input block w-full pr-10 py-3 border border-gray-200 rounded-lg bg-gray-50 focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 placeholder-gray-400 transition duration-200"
+              placeholder="أدخل اسم المستخدم"
+            >
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-1">كلمة المرور</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+              <i data-lucide="lock" class="w-5 h-5 text-gray-400"></i>
+            </div>
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              required
+              class="form-input block w-full pr-10 py-3 border border-gray-200 rounded-lg bg-gray-50 focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 placeholder-gray-400 transition duration-200"
+              placeholder="أدخل كلمة المرور"
+            >
+            <button type="button" class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400 hover:text-yellow-600 transition-colors" onclick="togglePassword()">
+              <i data-lucide="eye" class="w-5 h-5"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Remember & Forgot -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-yellow-600 focus:ring-yellow-500 border-gray-300 rounded">
+            <label for="remember-me" class="mr-2 block text-sm text-gray-700">تذكر بياناتي</label>
+          </div>
+          <a href="#" class="text-sm text-yellow-600 hover:text-yellow-700 transition-colors">نسيت كلمة المرور؟</a>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="w-full py-3 px-4 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center">
+          <i data-lucide="log-in" class="w-5 h-5 ml-2"></i>
+          تسجيل الدخول
+        </button>
+
+        <!-- Error Messages -->
+        {% if form.errors %}
+        <div class="mt-4 p-3 bg-red-50 text-red-600 text-sm rounded-lg border border-red-100">
+          <i data-lucide="alert-circle" class="w-4 h-4 inline-block ml-1"></i>
+          اسم المستخدم أو كلمة المرور غير صحيحة
+        </div>
+        {% endif %}
+      </form>
+
+      <!-- Registration Link -->
+      <div class="mt-6 text-center">
+        <p class="text-sm text-gray-600">ليس لديك حساب؟ 
+          <a href="{% url 'register_student' %}" class="text-yellow-600 hover:text-yellow-700 font-medium transition-colors">
+            إنشاء حساب جديد
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    function togglePassword() {
+      const passwordInput = document.getElementById('password');
+      const eyeIcon = document.querySelector('[data-lucide="eye"]');
+      
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.setAttribute('data-lucide', 'eye-off');
+      } else {
+        passwordInput.type = 'password';
+        eyeIcon.setAttribute('data-lucide', 'eye');
+      }
+      lucide.replace();
+    }
+
+    // Add animation to form inputs on focus
+    document.querySelectorAll('.form-input').forEach(input => {
+      input.addEventListener('focus', () => {
+        input.parentElement.querySelector('i').classList.add('text-yellow-500');
+      });
+      input.addEventListener('blur', () => {
+        input.parentElement.querySelector('i').classList.remove('text-yellow-500');
+      });
+    });
+  </script>
+</body>
+</html>
